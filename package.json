@@ -1,0 +1,13 @@
+{
+  "name": "firstvid-local-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FirstVid local homework explainer with a tiny Node backend for xAI/Grok analysis and video generation.",
+  "scripts": {
+    "setup:key": "powershell -ExecutionPolicy Bypass -File scripts/set-xai-key.ps1",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

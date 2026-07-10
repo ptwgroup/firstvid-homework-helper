@@ -1,0 +1,7 @@
+.env
+.firstvid-server.pid
+node_modules/
+generated/
+.firstvid-cache/
+review_frames/
+*.log

@@ -1,0 +1,25 @@
+{
+  "name": "FirstVid - First Principles Homework Helper",
+  "short_name": "FirstVid",
+  "description": "Capture homework, understand the idea, and generate a fun explainer clip.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff9f2",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./images/firstvid-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./images/firstvid-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

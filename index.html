@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="FirstVid" />
+  <title>FirstVid | First Principles Homework Helper</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./images/firstvid-icon-192.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Trebuchet MS"', '"Arial Rounded MT Bold"', 'system-ui', 'sans-serif'],
+            body: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 45px rgba(25, 35, 80, 0.12)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #14213d;
+      --mint: #c8f7dc;
+      --sky: #bde7ff;
+      --lemon: #fff2a8;
+      --coral: #ffb7a9;
+      --lavender: #dcd2ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(189, 231, 255, 0.75), transparent 34rem),
+        radial-gradient(circle at top right, rgba(255, 242, 168, 0.72), transparent 34rem),
+        linear-gradient(135deg, #fff9f2 0%, #f4fbff 48%, #fff6fb 100%);
+    }
+
+    .focus-ring:focus-visible {
+      outline: 4px solid #2563eb;
+      outline-offset: 3px;
+    }
+
+    .step-dot {
+      transition: transform 220ms ease, background 220ms ease, color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .step-dot.active {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+    }
+
+    .drop-ready {
+      border-color: #2563eb;
+      background: rgba(219, 234, 254, 0.72);
+      transform: translateY(-2px);
+    }
+
+    .fade-in {
+      animation: fadeIn 420ms ease both;
+    }
+
+    .float-in {
+      animation: floatIn 520ms cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal {
+      display: none;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .video-shell video {
+      background:
+        linear-gradient(135deg, rgba(20, 33, 61, 0.92), rgba(48, 67, 99, 0.88)),
+        url('./images/frame1.jpg') center / cover;
+    }
+  </style>
+</head>
+<body class="font-body antialiased">
+  <div class="min-h-screen">
+    <header class="px-4 py-4 sm:px-6 lg:px-8">
+      <div class="mx-auto flex max-w-7xl flex-col gap-4 rounded-lg border border-white/70 bg-white/78 p-4 shadow-soft backdrop-blur md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-3">
+          <div class="grid h-14 w-14 place-items-center rounded-lg bg-blue-600 text-2xl text-white shadow-lg shadow-blue-200" aria-hidden="true">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div>
+            <p class="font-display text-3xl font-black tracking-tight text-slate-950">FirstVid</p>
+            <p class="text-sm font-extrabold text-slate-700 sm:text-base">Turn “huh?” into “aha!” with tiny building blocks.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="resetBtn" class="focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+            Reset
+          </button>
+          <button id="parentsBtn" class="focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg bg-slate-950 px-5 py-2 font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg">
+            <i class="fa-solid fa-heart" aria-hidden="true"></i>
+            For Parents
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+      <section class="grid gap-6 py-4 lg:grid-cols-[1fr_420px] lg:items-stretch">
+        <div class="rounded-lg border border-white/70 bg-white/82 p-6 shadow-soft backdrop-blur sm:p-8">
+          <div class="mb-5 inline-flex items-center gap-2 rounded-lg bg-amber-100 px-3 py-2 text-sm font-extrabold text-amber-900">
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+            First Principles Homework Helper
+          </div>
+          <h1 class="font-display text-4xl font-black leading-tight text-slate-950 sm:text-5xl lg:text-6xl">
+            Homework goes in. Aha! comes out.
+          </h1>
+          <p class="mt-5 max-w-2xl text-lg font-bold leading-8 text-slate-700">
+            Snap it, paste it, or type it. FirstVid breaks the idea into fun little “click!” moments without stealing the final step.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <span class="rounded-lg bg-blue-100 px-4 py-3 font-black text-blue-950">📸 Capture</span>
+            <span class="rounded-lg bg-emerald-100 px-4 py-3 font-black text-emerald-950">🧱 Crack the idea</span>
+            <span class="rounded-lg bg-pink-100 px-4 py-3 font-black text-pink-950">🎬 Make it memorable</span>
+          </div>
+        </div>
+
+        <aside class="rounded-lg border border-slate-200 bg-slate-950 p-6 text-white shadow-soft">
+          <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-cyan-200">Progress</p>
+          <div class="mt-6 space-y-5" id="progressSteps" aria-label="Homework helper progress">
+            <div class="flex items-center gap-4">
+              <div data-step-dot="1" class="step-dot active grid h-12 w-12 place-items-center rounded-lg bg-blue-500 font-black text-white">1</div>
+              <div>
+                <p class="font-display text-xl font-black">1. Feed it</p>
+                <p class="text-sm text-slate-300">Photo, text, URL, or demo.</p>
+              </div>
+            </div>
+            <div class="ml-6 h-8 w-1 rounded-full bg-white/20"></div>
+            <div class="flex items-center gap-4">
+              <div data-step-dot="2" class="step-dot grid h-12 w-12 place-items-center rounded-lg bg-white/15 font-black text-white">2</div>
+              <div>
+                <p class="font-display text-xl font-black">2. Crack it</p>
+                <p class="text-sm text-slate-300">Tiny ideas, zero panic.</p>
+              </div>
+            </div>
+            <div class="ml-6 h-8 w-1 rounded-full bg-white/20"></div>
+            <div class="flex items-center gap-4">
+              <div data-step-dot="3" class="step-dot grid h-12 w-12 place-items-center rounded-lg bg-white/15 font-black text-white">3</div>
+              <div>
+                <p class="font-display text-xl font-black">3. Remix it</p>
+                <p class="text-sm text-slate-300">Generate a funny clip.</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 rounded-lg bg-white/10 p-4">
+            <p class="font-bold text-cyan-100">Tiny coach note</p>
+            <p id="coachNote" class="mt-1 text-sm leading-6 text-slate-200">Pick a homework example. We’ll go slowly and kindly.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <div class="space-y-6">
+          <section id="captureStep" class="rounded-lg border border-white/80 bg-white/88 p-5 shadow-soft backdrop-blur sm:p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Step 1</p>
+                <h2 class="font-display text-3xl font-black text-slate-950">Capture Homework</h2>
+              </div>
+              <button id="cameraBtn" class="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-emerald-500 px-5 py-3 font-black text-emerald-950 transition hover:-translate-y-0.5 hover:bg-emerald-400 hover:shadow-md">
+                <i class="fa-solid fa-camera" aria-hidden="true"></i>
+                Use Camera
+              </button>
+            </div>
+
+            <div class="mt-5 grid gap-4 xl:grid-cols-2 xl:items-stretch">
+            <div id="dropZone" class="rounded-lg border-2 border-dashed border-blue-200 bg-blue-50/70 p-5 text-center transition sm:p-6">
+              <input id="fileInput" type="file" accept="image/*" class="sr-only" />
+              <div class="mx-auto grid h-16 w-16 place-items-center rounded-lg bg-white text-3xl text-blue-600 shadow-md" aria-hidden="true">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <h3 class="mt-4 font-display text-xl font-black text-slate-950">Drop a homework photo here</h3>
+              <p class="mx-auto mt-2 max-w-xl text-sm font-medium leading-6 text-slate-600">Choose a clear photo: bright light, flat page, problem in the middle.</p>
+              <button id="chooseFileBtn" class="focus-ring mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md">
+                <i class="fa-solid fa-image" aria-hidden="true"></i>
+                Choose Image
+              </button>
+            </div>
+
+            <div class="order-2 rounded-lg bg-white p-4 ring-1 ring-slate-200">
+              <label for="writtenInput" class="font-display text-lg font-black text-slate-950">Or paste/write the homework</label>
+              <p class="mt-1 text-sm font-medium text-slate-600">Paste a question, a paragraph, or a URL to background material. This is great for typed assignments and copied links.</p>
+              <textarea id="writtenInput" rows="5" class="focus-ring mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-base font-medium leading-7 text-slate-800 transition focus:border-blue-500 focus:bg-white" placeholder="Example: 5 friends each get 2 cookies. Explain multiplication as equal groups. Or paste a URL here."></textarea>
+              <div class="mt-3 flex flex-wrap gap-3">
+                <button id="useWrittenBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg bg-slate-950 px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-md">
+                  <i class="fa-solid fa-keyboard" aria-hidden="true"></i>
+                  Use written input
+                </button>
+                <button id="clearWrittenBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:shadow-md">
+                  <i class="fa-solid fa-eraser" aria-hidden="true"></i>
+                  Clear
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <div id="previewWrap" class="mt-5 hidden rounded-lg border border-slate-200 bg-white p-3">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <img id="imagePreview" src="" alt="Homework preview" class="h-44 w-full rounded-lg object-cover sm:w-64" />
+                <div class="flex-1">
+                  <p class="font-display text-xl font-black">Homework image ready!</p>
+                  <p id="previewMeta" class="mt-1 text-sm font-medium text-slate-600">Your picture is loaded.</p>
+                  <div class="mt-4 flex flex-wrap gap-3">
+                    <button id="analyzeBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg bg-amber-300 px-5 py-3 font-black text-amber-950 transition hover:-translate-y-0.5 hover:bg-amber-200 hover:shadow-md">
+                      <i class="fa-solid fa-magnifying-glass-chart" aria-hidden="true"></i>
+                      Analyze
+                    </button>
+                    <button id="removeImageBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:shadow-md">
+                      <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="analysisStep" class="hidden rounded-lg border border-white/80 bg-white/90 p-5 shadow-soft backdrop-blur sm:p-6">
+            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p class="text-sm font-black uppercase tracking-[0.18em] text-emerald-700">Step 2</p>
+                <h2 class="font-display text-3xl font-black text-slate-950">First Principles Analysis</h2>
+                <p id="detectedLine" class="mt-2 text-lg font-bold text-slate-700"></p>
+              </div>
+              <button id="readBtn" class="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-pink-500 px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-pink-600 hover:shadow-md">
+                <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+                <span>Read Aloud</span>
+              </button>
+            </div>
+
+            <div id="buildingBlocks" class="mt-6 grid gap-4"></div>
+
+            <div class="mt-5 grid gap-4 md:grid-cols-3">
+              <div class="rounded-lg bg-cyan-50 p-4">
+                <p class="font-display text-lg font-black text-cyan-950"><i class="fa-solid fa-bridge mr-2" aria-hidden="true"></i>Analogy</p>
+                <p id="analogyText" class="mt-2 font-medium leading-7 text-slate-700"></p>
+              </div>
+              <div class="rounded-lg bg-violet-50 p-4">
+                <p class="font-display text-lg font-black text-violet-950"><i class="fa-solid fa-question mr-2" aria-hidden="true"></i>Think About</p>
+                <ul id="questionsList" class="mt-2 space-y-2 font-medium leading-6 text-slate-700"></ul>
+              </div>
+              <div class="rounded-lg bg-lime-50 p-4">
+                <p class="font-display text-lg font-black text-lime-950"><i class="fa-solid fa-star mr-2" aria-hidden="true"></i>Try it yourself!</p>
+                <p id="tryText" class="mt-2 font-medium leading-7 text-slate-700"></p>
+              </div>
+            </div>
+          </section>
+
+          <section id="videoStep" class="hidden rounded-lg border border-white/80 bg-white/90 p-5 shadow-soft backdrop-blur sm:p-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p class="text-sm font-black uppercase tracking-[0.18em] text-pink-700">Step 3</p>
+                <h2 class="font-display text-3xl font-black text-slate-950">Video Explanation</h2>
+              </div>
+              <p class="text-sm font-bold text-slate-600">Local explainer starts instantly. Cinematic AI clip is optional.</p>
+            </div>
+            <div class="video-shell relative mt-5 overflow-hidden rounded-lg border border-slate-200 bg-slate-950">
+              <canvas id="localExplainerCanvas" class="aspect-video w-full bg-slate-950"></canvas>
+              <video id="demoVideo" class="aspect-video w-full" controls muted playsinline preload="metadata" poster="./images/frame1.jpg">
+                <source src="./firstvid_demo.mp4" type="video/mp4" />
+                Your browser cannot play this video. Use the storyboard instead.
+              </video>
+              <div id="localVideoControls" class="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-lg bg-slate-950/72 p-2 text-white backdrop-blur">
+                <div class="flex items-center gap-2">
+                  <button id="localPlayBtn" class="focus-ring grid h-11 w-11 place-items-center rounded-lg bg-white/14 transition hover:bg-white/22" aria-label="Pause local explainer">
+                    <i class="fa-solid fa-pause" aria-hidden="true"></i>
+                  </button>
+                  <button id="localVoiceBtn" class="focus-ring grid h-11 w-11 place-items-center rounded-lg bg-white/14 transition hover:bg-white/22" aria-label="Turn narrator on">
+                    <i class="fa-solid fa-comment-slash" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button id="localVolumeDownBtn" class="focus-ring grid h-11 w-11 place-items-center rounded-lg bg-white/14 transition hover:bg-white/22" aria-label="Lower narrator volume">
+                    <i class="fa-solid fa-volume-low" aria-hidden="true"></i>
+                  </button>
+                  <button id="localVolumeUpBtn" class="focus-ring grid h-11 w-11 place-items-center rounded-lg bg-white/14 transition hover:bg-white/22" aria-label="Raise narrator volume">
+                    <i class="fa-solid fa-volume-high" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="videoStatus" class="mt-3 hidden rounded-lg bg-amber-50 p-3 text-sm font-bold text-amber-900"></div>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <a id="downloadVideoBtn" href="./firstvid_demo.mp4" download class="hidden"></a>
+              <button id="generateVideoBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg bg-pink-500 px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-pink-600 hover:shadow-md">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                Cinematic AI clip
+              </button>
+            </div>
+            <div class="mt-5 rounded-lg bg-slate-50 p-4">
+              <p class="font-display text-lg font-black">Core beats</p>
+              <p id="scriptText" class="mt-2 whitespace-pre-line font-medium leading-7 text-slate-700"></p>
+            </div>
+            <div class="mt-5 rounded-lg bg-white p-4 ring-1 ring-slate-200">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Ask More</p>
+                  <h3 class="font-display text-2xl font-black text-slate-950">Which exact step is stuck?</h3>
+                </div>
+                <p class="text-sm font-bold text-slate-600">Sharper, not longer.</p>
+              </div>
+              <div id="chatMessages" class="mt-4 max-h-72 space-y-3 overflow-y-auto rounded-lg bg-slate-50 p-3"></div>
+              <div class="mt-3 flex flex-col gap-3 sm:flex-row">
+                <input id="chatInput" class="focus-ring min-h-12 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-3 font-medium text-slate-800" placeholder="Example: Why does heating make it turn into liquid?" />
+                <button id="sendChatBtn" class="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md">
+                  <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                  Ask
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="space-y-6">
+          <section class="rounded-lg border border-white/80 bg-white/88 p-5 shadow-soft backdrop-blur">
+            <p class="text-sm font-black uppercase tracking-[0.18em] text-amber-700">Recent Examples</p>
+            <h2 class="mt-1 font-display text-2xl font-black text-slate-950">Last 3 you made</h2>
+            <div id="demoCards" class="mt-4 grid gap-3"></div>
+          </section>
+
+          <section class="rounded-lg border border-white/80 bg-white/88 p-5 shadow-soft backdrop-blur">
+            <p class="font-display text-xl font-black text-slate-950">How FirstVid thinks</p>
+            <div class="mt-4 space-y-3 text-sm font-medium leading-6 text-slate-700">
+              <p><span class="font-black text-blue-700">1.</span> Name the smallest idea.</p>
+              <p><span class="font-black text-emerald-700">2.</span> Connect it to something familiar.</p>
+              <p><span class="font-black text-pink-700">3.</span> Leave the final move for the learner.</p>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div id="parentsModal" class="modal fixed inset-0 z-50 items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="parentsTitle">
+    <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-6 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">For Parents</p>
+          <h2 id="parentsTitle" class="font-display text-3xl font-black text-slate-950">Why first principles?</h2>
+        </div>
+        <button class="closeModal focus-ring grid h-11 w-11 place-items-center rounded-lg bg-slate-100 text-slate-700" aria-label="Close parent tips">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="mt-5 grid gap-4 md:grid-cols-2">
+        <div class="rounded-lg bg-blue-50 p-4">
+          <p class="font-display text-xl font-black">It slows the rush</p>
+          <p class="mt-2 leading-7 text-slate-700">The app avoids handing over final numerical answers. It teaches the smallest ideas underneath the work, then invites the child to finish with confidence.</p>
+        </div>
+        <div class="rounded-lg bg-emerald-50 p-4">
+          <p class="font-display text-xl font-black">It supports conversation</p>
+          <p class="mt-2 leading-7 text-slate-700">Use the “Think About” questions as prompts. Ask your child to explain one building block back to you in their own words.</p>
+        </div>
+        <div class="rounded-lg bg-amber-50 p-4">
+          <p class="font-display text-xl font-black">It is local-first</p>
+          <p class="mt-2 leading-7 text-slate-700">This demo runs in the browser. Camera access stays in the page. Real AI can be added later through a privacy-aware backend.</p>
+        </div>
+        <div class="rounded-lg bg-pink-50 p-4">
+          <p class="font-display text-xl font-black">It is age-flexible</p>
+          <p class="mt-2 leading-7 text-slate-700">You can tune tone, detail, and examples for a young child, middle schooler, or older student by changing the demo data or future AI prompt.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cameraModal" class="modal fixed inset-0 z-50 items-center justify-center bg-slate-950/70 p-4" role="dialog" aria-modal="true" aria-labelledby="cameraTitle">
+    <div class="w-full max-w-3xl rounded-lg bg-white p-5 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.18em] text-emerald-700">Camera</p>
+          <h2 id="cameraTitle" class="font-display text-3xl font-black text-slate-950">Take a homework photo</h2>
+          <p id="cameraMessage" class="mt-1 font-medium text-slate-600">Camera works best on localhost or HTTPS. If permission is blocked, upload an image instead.</p>
+        </div>
+        <button id="closeCameraBtn" class="focus-ring grid h-11 w-11 place-items-center rounded-lg bg-slate-100 text-slate-700" aria-label="Close camera">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <video id="cameraVideo" class="mt-5 aspect-video w-full rounded-lg bg-slate-950 object-cover" autoplay playsinline muted></video>
+      <canvas id="cameraCanvas" class="hidden"></canvas>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button id="captureBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg bg-emerald-500 px-5 py-3 font-black text-emerald-950 transition hover:bg-emerald-400">
+          <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+          Capture
+        </button>
+        <button id="retryCameraBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 transition hover:shadow-md">
+          <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+          Try Camera Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="storyboardModal" class="modal fixed inset-0 z-50 items-center justify-center bg-slate-950/70 p-4" role="dialog" aria-modal="true" aria-labelledby="storyboardTitle">
+    <div class="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-lg bg-white p-5 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.18em] text-violet-700">Storyboard</p>
+          <h2 id="storyboardTitle" class="font-display text-3xl font-black text-slate-950">Five-frame explanation</h2>
+        </div>
+        <button class="closeModal focus-ring grid h-11 w-11 place-items-center rounded-lg bg-slate-100 text-slate-700" aria-label="Close storyboard">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="storyboardGrid" class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5"></div>
+    </div>
+  </div>
+
+  <script>
+    const demos = {
+      cookies: {
+        label: 'Math',
+        title: '5 friends × 2 cookies each',
+        emoji: '🍪',
+        color: 'bg-amber-100 text-amber-950',
+        subject: 'Math: Multiplication',
+        problem: '5 friends each get 2 cookies. What idea helps us find the total?',
+        detected: 'Detected subject: Math. Problem: 5 equal groups with 2 cookies in each group.',
+        blocks: [
+          {
+            title: 'Block 1: A group is one bundle',
+            icon: 'fa-people-group',
+            body: 'Start with one friend. That friend gets a small bundle of 2 cookies. We can think of “2 cookies” as one repeatable group.'
+          },
+          {
+            title: 'Block 2: Equal groups are fair groups',
+            icon: 'fa-scale-balanced',
+            body: 'Every friend gets the same amount, so the groups are equal. Equal groups let us use multiplication instead of guessing.'
+          },
+          {
+            title: 'Block 3: Multiplication is repeated addition',
+            icon: 'fa-plus',
+            body: 'Instead of counting every cookie one by one, we can add the same group again and again: 2 + 2 + 2 + 2 + 2. Stop before the final total and check each group.'
+          }
+        ],
+        analogy: 'Imagine packing identical snack bags. If each bag gets 2 cookies, you can count by bags instead of chasing every cookie around the table.',
+        questions: [
+          'How many equal groups do you see?',
+          'What number is inside each group?',
+          'Can you say the repeated addition sentence out loud?'
+        ],
+        tryIt: 'Draw five circles for the friends. Put two cookie dots in each circle. Then count your dots carefully or skip-count by twos. You have the final step!',
+        script: 'First, find the groups: the friends. Next, find what repeats: two cookies. Multiplication is a shortcut for equal groups, so this problem is really asking us to repeat the same group five times. Draw it, say it, then finish the count yourself.',
+        storyboardCaptions: [
+          'Read the homework and name the tiny story.',
+          'Make five clear friend groups.',
+          'Place two cookies in each group.',
+          'Turn the picture into repeated addition.',
+          'Try the final count yourself.'
+        ]
+      },
+      plants: {
+        label: 'Science',
+        title: 'How do plants make their own food?',
+        emoji: '🌱',
+        color: 'bg-emerald-100 text-emerald-950',
+        subject: 'Science: Photosynthesis',
+        problem: 'How do plants use sunlight, air, and water to make sugar?',
+        detected: 'Detected subject: Science. Problem: Explaining photosynthesis from simple ingredients.',
+        blocks: [
+          {
+            title: 'Block 1: Plants need energy',
+            icon: 'fa-sun',
+            body: 'Living things need energy. Plants do not eat lunch like we do, so they collect light energy from the sun.'
+          },
+          {
+            title: 'Block 2: Leaves are tiny kitchens',
+            icon: 'fa-leaf',
+            body: 'Leaves take in carbon dioxide from the air and water from the roots. Inside the leaf, light helps rearrange these ingredients.'
+          },
+          {
+            title: 'Block 3: Food stores energy',
+            icon: 'fa-jar',
+            body: 'The plant makes sugar, which stores energy it can use to grow. Oxygen is released back into the air as a helpful extra.'
+          }
+        ],
+        analogy: 'Think of a leaf like a solar-powered kitchen: sunlight is the power, water and air are ingredients, and sugar is the snack the plant saves.',
+        questions: [
+          'What does sunlight give the plant?',
+          'Which ingredients come from roots and air?',
+          'Why is sugar useful for growing?'
+        ],
+        tryIt: 'Draw a leaf. Add arrows for sunlight, water, and air going in. Add sugar staying in the plant and oxygen going out.',
+        script: 'A plant begins with a need: energy. Its leaves collect light, pull in air, and use water from the roots. With those simple pieces, the plant builds sugar. That is the first-principles story of photosynthesis.',
+        storyboardCaptions: [
+          'Start with the plant’s need for energy.',
+          'Sunlight reaches the leaf.',
+          'Water and air become ingredients.',
+          'The leaf makes sugar for growth.',
+          'Explain the cycle in your own words.'
+        ]
+      },
+      placeValue: {
+        label: 'Math',
+        title: 'Place value example',
+        emoji: '🔢',
+        color: 'bg-sky-100 text-sky-950',
+        subject: 'Math: Place Value',
+        problem: 'How does the position of a digit change its value?',
+        detected: 'Detected subject: Math. Problem: Understanding ones, tens, and hundreds.',
+        blocks: [
+          {
+            title: 'Block 1: A digit is a symbol',
+            icon: 'fa-hashtag',
+            body: 'The digit tells us which counting symbol we are using, like 4 or 7. By itself, it is just a symbol.'
+          },
+          {
+            title: 'Block 2: A place is a job',
+            icon: 'fa-table-columns',
+            body: 'Each position gives the digit a job. In the ones place it counts singles. In the tens place it counts bundles of ten.'
+          },
+          {
+            title: 'Block 3: Value means digit times place',
+            icon: 'fa-layer-group',
+            body: 'A digit’s value comes from its digit and its place working together. Same digit, different place, different size.'
+          }
+        ],
+        analogy: 'A digit is like a player on a team. The place value column is the position they play. Change the position, and the job changes.',
+        questions: [
+          'Which column is the digit standing in?',
+          'Is it counting singles, tens, or hundreds?',
+          'How could you build it with blocks?'
+        ],
+        tryIt: 'Choose a two- or three-digit number. Circle one digit, name its place, then draw bundles to show what it is worth.',
+        script: 'Place value is not magic. It is a system of jobs. The digit tells us the symbol, the column tells us the size, and together they tell us the value.',
+        storyboardCaptions: [
+          'Look at the whole number first.',
+          'Find the digit’s column.',
+          'Name the column’s job.',
+          'Build the value with bundles.',
+          'Try another digit yourself.'
+        ]
+      },
+      custom: {
+        label: 'Uploaded',
+        title: 'Your homework photo',
+        emoji: '📄',
+        color: 'bg-violet-100 text-violet-950',
+        subject: 'Homework Snapshot',
+        problem: 'A photo was loaded. This offline demo shows how a future AI analysis would be presented.',
+        detected: 'Detected subject: Demo mode. A real vision model would read the homework text here.',
+        blocks: [
+          {
+            title: 'Block 1: Read what is being asked',
+            icon: 'fa-book-open-reader',
+            body: 'Before solving, underline the question. Ask: “What does this want me to find, explain, compare, or prove?”'
+          },
+          {
+            title: 'Block 2: Find the tiny facts',
+            icon: 'fa-cubes',
+            body: 'List the facts you already know. Good homework solving usually starts with small true pieces.'
+          },
+          {
+            title: 'Block 3: Make one careful move',
+            icon: 'fa-shoe-prints',
+            body: 'Use one fact to take one step. Then check whether the step makes sense before moving again.'
+          }
+        ],
+        analogy: 'Homework is like building with blocks: if the first block is steady, the next block is easier to place.',
+        questions: [
+          'What is the problem asking for?',
+          'What information is already given?',
+          'What is one small step you can try?'
+        ],
+        tryIt: 'Write the question in your own words. Then choose one tiny first step. You are learning the path, not just chasing the answer.',
+        script: 'In a real AI version, FirstVid would read the image, identify the subject, and build a custom explanation. This local demo shows the learning style: start small, connect ideas, and let the learner finish.',
+        storyboardCaptions: [
+          'Capture a clear homework photo.',
+          'Find the question being asked.',
+          'Break it into tiny facts.',
+          'Connect facts one at a time.',
+          'Try the final move yourself.'
+        ]
+      }
+    };
+
+    const state = {
+      currentDemoKey: null,
+      imageLoaded: false,
+      imageDataUrl: '',
+      textInput: '',
+      latestAnalysis: null,
+      recentItems: [],
+      chatHistory: [],
+      videoGenerationActive: false,
+      localExplainer: null,
+      localExplainerFrame: null,
+      localExplainerStartedAt: 0,
+      localExplainerElapsedBeforePause: 0,
+      localExplainerPlaying: false,
+      localNarrationOn: false,
+      localNarrationVolume: 0.85,
+      localNarrationSceneIndex: -1,
+      localSfxContext: null,
+      localSfxSceneIndex: -1,
+      explainerMode: 'story',
+      speaking: false,
+      stream: null
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const elements = {
+      dropZone: $('dropZone'),
+      fileInput: $('fileInput'),
+      writtenInput: $('writtenInput'),
+      useWrittenBtn: $('useWrittenBtn'),
+      clearWrittenBtn: $('clearWrittenBtn'),
+      chooseFileBtn: $('chooseFileBtn'),
+      previewWrap: $('previewWrap'),
+      imagePreview: $('imagePreview'),
+      previewMeta: $('previewMeta'),
+      analyzeBtn: $('analyzeBtn'),
+      removeImageBtn: $('removeImageBtn'),
+      demoCards: $('demoCards'),
+      analysisStep: $('analysisStep'),
+      videoStep: $('videoStep'),
+      detectedLine: $('detectedLine'),
+      buildingBlocks: $('buildingBlocks'),
+      analogyText: $('analogyText'),
+      questionsList: $('questionsList'),
+      tryText: $('tryText'),
+      scriptText: $('scriptText'),
+      readBtn: $('readBtn'),
+      localExplainerCanvas: $('localExplainerCanvas'),
+      localVideoControls: $('localVideoControls'),
+      localPlayBtn: $('localPlayBtn'),
+      localVoiceBtn: $('localVoiceBtn'),
+      localVolumeDownBtn: $('localVolumeDownBtn'),
+      localVolumeUpBtn: $('localVolumeUpBtn'),
+      demoVideo: $('demoVideo'),
+      videoStatus: $('videoStatus'),
+      downloadVideoBtn: $('downloadVideoBtn'),
+      generateVideoBtn: $('generateVideoBtn'),
+      chatMessages: $('chatMessages'),
+      chatInput: $('chatInput'),
+      sendChatBtn: $('sendChatBtn'),
+      storyboardGrid: $('storyboardGrid'),
+      coachNote: $('coachNote'),
+      cameraModal: $('cameraModal'),
+      cameraVideo: $('cameraVideo'),
+      cameraCanvas: $('cameraCanvas'),
+      cameraMessage: $('cameraMessage')
+    };
+
+    function setProgress(step) {
+      document.querySelectorAll('[data-step-dot]').forEach((dot) => {
+        const dotStep = Number(dot.dataset.stepDot);
+        const isActive = dotStep <= step;
+        dot.classList.toggle('active', isActive);
+        dot.classList.toggle('bg-blue-500', isActive);
+        dot.classList.toggle('bg-white/15', !isActive);
+      });
+    }
+
+    function renderDemoCards() {
+      state.recentItems = loadRecentItems();
+      if (state.recentItems.length) {
+        elements.demoCards.innerHTML = state.recentItems.map((item) => `
+          <button data-recent-id="${item.id}" class="recent-card focus-ring w-full rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md">
+            <div class="flex items-start gap-3">
+              <div class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-blue-100 text-2xl text-blue-950" aria-hidden="true">↩</div>
+              <div>
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">${escapeHtml(item.kind || 'Recent')}</p>
+                <p class="mt-1 font-display text-lg font-black text-slate-950">${escapeHtml(item.title)}</p>
+                <p class="mt-1 text-sm font-medium text-slate-600">${escapeHtml(item.problem)}</p>
+              </div>
+            </div>
+          </button>
+        `).join('');
+      } else {
+        elements.demoCards.innerHTML = Object.entries(demos)
+          .filter(([key]) => key !== 'custom')
+          .map(([key, demo]) => `
+            <button data-demo="${key}" class="demo-card focus-ring w-full rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md">
+            <div class="flex items-start gap-3">
+              <div class="grid h-12 w-12 shrink-0 place-items-center rounded-lg ${demo.color} text-2xl" aria-hidden="true">${demo.emoji}</div>
+              <div>
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">${demo.label}</p>
+                <p class="mt-1 font-display text-lg font-black text-slate-950">${demo.title}</p>
+                <p class="mt-1 text-sm font-medium text-slate-600">Starter example. Your last 3 analyses will replace these.</p>
+              </div>
+            </div>
+          </button>
+        `).join('');
+      }
+
+      document.querySelectorAll('.demo-card').forEach((card) => {
+        card.addEventListener('click', () => loadDemo(card.dataset.demo));
+      });
+      document.querySelectorAll('.recent-card').forEach((card) => {
+        card.addEventListener('click', () => loadRecent(card.dataset.recentId));
+      });
+    }
+
+    function loadRecentItems() {
+      try {
+        return JSON.parse(localStorage.getItem('firstvid_recent') || '[]').slice(0, 3);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveRecentAnalysis(analysis, sourceLabel) {
+      const item = {
+        id: String(Date.now()),
+        title: analysis.subject || 'Homework',
+        problem: shorten(analysis.problem || analysis.detected || 'Recent homework', 80),
+        kind: sourceLabel || 'AI analysis',
+        analysis
+      };
+      const next = [item, ...loadRecentItems().filter((existing) => existing.problem !== item.problem)].slice(0, 3);
+      localStorage.setItem('firstvid_recent', JSON.stringify(next));
+      state.recentItems = next;
+      renderDemoCards();
+    }
+
+    function loadRecent(id) {
+      const item = loadRecentItems().find((entry) => entry.id === id);
+      if (!item) return;
+      state.currentDemoKey = 'custom';
+      state.textInput = '';
+      state.imageDataUrl = '';
+      showPreview('./images/frame1.jpg', `${item.title} loaded from recent examples.`);
+      renderAnalysis(item.analysis);
+      elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function shorten(text, max) {
+      const value = String(text || '');
+      return value.length > max ? `${value.slice(0, max - 1)}…` : value;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function showPreview(src, label) {
+      elements.imagePreview.src = src;
+      state.imageDataUrl = src.startsWith('data:image/') ? src : '';
+      elements.previewMeta.textContent = label;
+      elements.previewWrap.classList.remove('hidden');
+      elements.previewWrap.classList.add('fade-in');
+      state.imageLoaded = true;
+      setProgress(1);
+      elements.coachNote.textContent = 'Nice capture. Now ask: what tiny idea is hiding underneath?';
+    }
+
+    function loadDemo(key) {
+      const demo = demos[key];
+      state.currentDemoKey = key;
+      showPreview(`./images/frame1.jpg`, `${demo.title} demo loaded.`);
+      renderAnalysis(demo);
+      elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleFile(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Please choose an image file so FirstVid can see the homework.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.currentDemoKey = 'custom';
+        state.textInput = '';
+        showPreview(reader.result, `${file.name} is ready.`);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function useWrittenInput() {
+      const value = elements.writtenInput.value.trim();
+      if (!value) {
+        showToast('Paste a question, URL, or homework text first.');
+        return;
+      }
+      state.currentDemoKey = 'custom';
+      state.textInput = value;
+      state.imageDataUrl = '';
+      showPreview('./images/frame1.jpg', value.startsWith('http') ? 'URL ready for analysis.' : 'Written homework ready for analysis.');
+      elements.coachNote.textContent = 'Nice. We can analyze this written task without a photo.';
+    }
+
+    function renderAnalysis(demo) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      state.speaking = false;
+      elements.readBtn.innerHTML = '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read Aloud</span>';
+      state.latestAnalysis = demo;
+      elements.analysisStep.classList.remove('hidden');
+      elements.analysisStep.classList.add('float-in');
+      elements.videoStep.classList.remove('hidden');
+      elements.videoStep.classList.add('float-in');
+      setProgress(3);
+      elements.coachNote.textContent = 'Great. Read one block, then explain it back in your own words.';
+
+      elements.detectedLine.textContent = demo.detected;
+      elements.buildingBlocks.innerHTML = demo.blocks.map((block, index) => `
+        <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex gap-4">
+            <div class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-blue-100 text-blue-700" aria-hidden="true">
+              <i class="fa-solid ${block.icon}"></i>
+            </div>
+            <div>
+              <p class="font-display text-xl font-black text-slate-950">${block.title}</p>
+              <p class="mt-2 font-medium leading-7 text-slate-700">${block.body}</p>
+              <p class="mt-3 inline-flex rounded-lg bg-slate-100 px-3 py-1 text-sm font-bold text-slate-600">Building block ${index + 1}</p>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      elements.analogyText.textContent = demo.analogy;
+      elements.questionsList.innerHTML = demo.questions.map((question) => `<li class="flex gap-2"><span aria-hidden="true">•</span><span>${question}</span></li>`).join('');
+      elements.tryText.textContent = demo.tryIt;
+      elements.scriptText.textContent = makeCoreBeats(demo);
+      renderStoryboard(demo);
+      resetChat(demo);
+      startLocalExplainer(demo);
+    }
+
+    function currentDemo() {
+      return demos[state.currentDemoKey || 'custom'];
+    }
+
+    function makeCoreBeats(analysis) {
+      const blocks = Array.isArray(analysis.blocks) ? analysis.blocks.slice(0, 3) : [];
+      const beats = blocks.map((block) => `${block.title}: ${block.body}`);
+      if (analysis.tryIt) beats.push(`Your move: ${analysis.tryIt}`);
+      return beats.map((beat) => `• ${shorten(beat, 115)}`).join('\n');
+    }
+
+    async function analyzeCurrentImage() {
+      if (!state.imageLoaded) {
+        showToast('Add a photo or choose a demo first.');
+        return;
+      }
+
+      if (state.currentDemoKey && state.currentDemoKey !== 'custom') {
+        renderAnalysis(currentDemo());
+        elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      await analyzeWithLocalAI();
+    }
+
+    async function analyzeWithLocalAI() {
+      if (!state.imageDataUrl && !state.textInput) {
+        showToast('Add a photo, pasted task, or URL first.');
+        return;
+      }
+
+      setAnalyzeBusy(true);
+      elements.analysisStep.classList.remove('hidden');
+      elements.analysisStep.classList.add('float-in');
+      elements.videoStep.classList.add('hidden');
+      setProgress(2);
+      state.latestAnalysis = null;
+      elements.detectedLine.textContent = 'Grok is reading the homework now...';
+      elements.buildingBlocks.innerHTML = `
+        <div class="rounded-lg border border-blue-200 bg-blue-50 p-5">
+          <p class="font-display text-xl font-black text-blue-950">
+            <i class="fa-solid fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+            Asking Grok for the real Step 2 analysis
+          </p>
+          <p class="mt-2 font-bold leading-7 text-slate-700">No local substitute here. FirstVid waits for Grok so the explanation is actually based on the homework.</p>
+        </div>
+      `;
+      elements.analogyText.textContent = '';
+      elements.questionsList.innerHTML = '';
+      elements.tryText.textContent = '';
+      elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      elements.coachNote.textContent = 'Grok analysis is required for Step 2. Waiting quietly...';
+
+      try {
+        const result = await postJson('/api/analyze-homework', {
+          imageDataUrl: state.imageDataUrl,
+          textInput: state.textInput
+        });
+        if (!['ai', 'cache'].includes(result.mode) || !result.analysis) {
+          showAnalysisIssue(result);
+          return;
+        }
+        const analysis = result.analysis;
+        renderAnalysis(analysis);
+        if (result.mode === 'ai') {
+          saveRecentAnalysis(analysis, state.textInput ? 'Written/Text' : 'Image');
+        }
+
+        elements.videoStatus.classList.remove('hidden');
+        elements.videoStatus.textContent = result.mode === 'cache'
+          ? 'Saved Grok analysis loaded. Funny local explainer starts automatically. Cinematic AI clip is optional.'
+          : 'Grok analysis ready. Funny local explainer starts automatically. Cinematic AI clip is optional.';
+      } catch (error) {
+        showAnalysisIssue(error);
+      } finally {
+        setAnalyzeBusy(false);
+      }
+    }
+
+    function showAnalysisIssue(error) {
+      const code = error?.code || '';
+      const isCredits = code === 'OUT_OF_CREDITS' || /credit|spending|quota|permission|402/i.test(error?.message || error?.error || '');
+      const title = isCredits ? 'Out of Grok credits' : 'Grok analysis needed';
+      const message = error?.message || error?.error || 'Step 2 requires Grok analysis. Try again when the local server and credits are ready.';
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      state.speaking = false;
+      state.latestAnalysis = null;
+      elements.readBtn.innerHTML = '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read Aloud</span>';
+      elements.analysisStep.classList.remove('hidden');
+      elements.videoStep.classList.add('hidden');
+      setProgress(2);
+      elements.detectedLine.textContent = '';
+      elements.buildingBlocks.innerHTML = `
+        <div class="rounded-lg border-2 ${isCredits ? 'border-amber-300 bg-amber-50' : 'border-rose-200 bg-rose-50'} p-5">
+          <p class="font-display text-2xl font-black ${isCredits ? 'text-amber-950' : 'text-rose-950'}">
+            <i class="fa-solid ${isCredits ? 'fa-coins' : 'fa-triangle-exclamation'} mr-2" aria-hidden="true"></i>
+            ${title}
+          </p>
+          <p class="mt-3 font-bold leading-7 text-slate-700">${escapeHtml(message)}</p>
+          <p class="mt-3 text-sm font-black uppercase tracking-[0.16em] text-slate-500">Step 2 is locked until Grok can analyze the homework.</p>
+        </div>
+      `;
+      elements.analogyText.textContent = '';
+      elements.questionsList.innerHTML = '';
+      elements.tryText.textContent = '';
+      elements.coachNote.textContent = isCredits
+        ? 'Out of Grok credits. FirstVid will not read aloud or pretend a local analysis is enough.'
+        : 'Grok analysis is required for Step 2.';
+      elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function makeQuickDraft() {
+      const raw = state.textInput || 'the homework in your picture';
+      const topic = shorten(raw.replace(/^https?:\/\/\S+/i, 'the linked homework topic'), 96);
+      return {
+        subject: state.textInput ? 'Quick Draft' : 'Quick Photo Draft',
+        problem: topic,
+        detected: state.textInput
+          ? `Quick read: ${topic}`
+          : 'Quick draft while Grok reads the image.',
+        blocks: [
+          {
+            title: '1. Name the target',
+            icon: 'fa-magnifying-glass',
+            body: 'What is the homework asking you to find, explain, or compare? Circle that first.'
+          },
+          {
+            title: '2. Spot the tiny pieces',
+            icon: 'fa-cubes',
+            body: 'Look for the small facts or rules that must be true before anything fancy happens.'
+          },
+          {
+            title: '3. Make one move',
+            icon: 'fa-shoe-prints',
+            body: 'Use one tiny piece, check it, then take the next step. No answer-snatching.'
+          }
+        ],
+        analogy: 'Think LEGO: find the first brick, then the tower stops wobbling.',
+        questions: ['What is the target?', 'What facts do you already have?', 'What is one tiny next move?'],
+        tryIt: 'Say the problem in your own words. That alone unlocks a surprising amount.',
+        script: `We start with the target: ${topic}. Then we find the tiny pieces, connect one piece at a time, and leave the final move for you.`,
+        storyboardCaptions: ['Name the target', 'Find tiny pieces', 'Connect one idea', 'Add a funny visual', 'Your turn'],
+        videoPrompt: `Explain this homework quickly and clearly: ${topic}`,
+        parentNote: '',
+        confidence: 0.35,
+        safetyNote: 'Quick local draft while AI finishes.'
+      };
+    }
+
+    function setAnalyzeBusy(isBusy) {
+      elements.analyzeBtn.disabled = isBusy;
+      elements.analyzeBtn.classList.toggle('opacity-70', isBusy);
+      elements.analyzeBtn.classList.toggle('cursor-wait', isBusy);
+      elements.analyzeBtn.innerHTML = isBusy
+        ? '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Analyzing...'
+        : '<i class="fa-solid fa-magnifying-glass-chart" aria-hidden="true"></i> Analyze';
+    }
+
+    async function generateAIShortVideo(analysis = state.latestAnalysis || currentDemo(), options = {}) {
+      if (state.videoGenerationActive) return;
+      state.videoGenerationActive = true;
+      setVideoBusy(true, options.automatic ? 'Generating a funny AI clip...' : 'Asking Grok Imagine for the shortest clear funny clip...');
+      try {
+        const result = await postJson('/api/generate-video', {
+          analysis,
+          script: analysis.script,
+          videoPrompt: analysis.videoPrompt || analysis.script
+        });
+
+        if (result.mode === 'local-video-fallback' || result.mode === 'setup-needed') {
+          startLocalExplainer(analysis);
+          elements.videoStatus.classList.remove('hidden');
+          elements.videoStatus.textContent = result.message || 'Cinematic AI is unavailable, so the local explainer stays in charge.';
+          return;
+        }
+
+        setVideoSource(result.videoUrl || './firstvid_demo.mp4');
+        elements.videoStatus.classList.remove('hidden');
+        elements.videoStatus.textContent = result.message || 'Video is ready.';
+      } catch (error) {
+        startLocalExplainer(analysis);
+        elements.videoStatus.classList.remove('hidden');
+        elements.videoStatus.textContent = 'Cinematic AI video is unavailable right now. The local explainer is still ready and uses no credits.';
+      } finally {
+        state.videoGenerationActive = false;
+        setVideoBusy(false);
+      }
+    }
+
+    async function postJson(url, payload) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const error = new Error(data.error || response.statusText || 'Request failed');
+        error.code = data.code || '';
+        error.details = data;
+        throw error;
+      }
+      return data;
+    }
+
+    function setVideoBusy(isBusy, message = '') {
+      elements.generateVideoBtn.disabled = isBusy;
+      elements.generateVideoBtn.classList.toggle('opacity-70', isBusy);
+      elements.generateVideoBtn.classList.toggle('cursor-wait', isBusy);
+      elements.generateVideoBtn.innerHTML = isBusy
+        ? '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Generating...'
+        : '<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Cinematic AI clip';
+      if (message) {
+        elements.videoStatus.classList.remove('hidden');
+        elements.videoStatus.textContent = message;
+      }
+    }
+
+    function setVideoSource(src) {
+      if (state.localExplainerFrame) {
+        cancelAnimationFrame(state.localExplainerFrame);
+        state.localExplainerFrame = null;
+      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      state.localExplainerPlaying = false;
+      state.localNarrationOn = false;
+      elements.localExplainerCanvas.classList.add('hidden');
+      elements.localVideoControls.classList.add('hidden');
+      elements.demoVideo.classList.remove('hidden');
+      elements.demoVideo.src = src;
+      elements.demoVideo.load();
+      elements.downloadVideoBtn.href = src;
+      elements.downloadVideoBtn.toggleAttribute('download', src.startsWith('./') || src.startsWith('/'));
+      startSampleVideo();
+    }
+
+    function resetChat(analysis) {
+      state.chatHistory = [];
+      elements.chatMessages.innerHTML = `
+        <div class="rounded-lg bg-white p-3 text-sm font-bold leading-6 text-slate-700">
+          Ask one exact stuck point about <span class="text-blue-700">${escapeHtml(analysis.subject || 'this topic')}</span>. I’ll zoom into the mechanism, not repeat the whole lesson.
+        </div>
+      `;
+    }
+
+    async function sendChatMessage() {
+      const message = elements.chatInput.value.trim();
+      if (!message) return;
+      const analysis = state.latestAnalysis || currentDemo();
+      appendChatBubble('user', message);
+      elements.chatInput.value = '';
+      elements.sendChatBtn.disabled = true;
+      elements.sendChatBtn.classList.add('opacity-70', 'cursor-wait');
+
+      try {
+        const result = await postJson('/api/chat-subject', {
+          analysis,
+          history: state.chatHistory,
+          message
+        });
+        const answer = result.answer || 'Try asking that one more way.';
+        appendChatBubble('assistant', answer);
+        state.chatHistory.push({ role: 'user', content: message }, { role: 'assistant', content: answer });
+        state.chatHistory = state.chatHistory.slice(-8);
+      } catch (error) {
+        const isCredits = error.code === 'OUT_OF_CREDITS' || /credit|spending|quota/i.test(error.message);
+        appendChatBubble('assistant', isCredits
+          ? 'Out of Grok credits right now, so chat is paused. I will not make up a local answer.'
+          : `Grok chat is not ready: ${error.message}`);
+      } finally {
+        elements.sendChatBtn.disabled = false;
+        elements.sendChatBtn.classList.remove('opacity-70', 'cursor-wait');
+      }
+    }
+
+    function appendChatBubble(role, text) {
+      const isUser = role === 'user';
+      const bubble = document.createElement('div');
+      bubble.className = `rounded-lg p-3 text-sm font-semibold leading-6 whitespace-pre-line ${isUser ? 'ml-auto bg-blue-600 text-white' : 'mr-auto bg-white text-slate-700'} max-w-[85%]`;
+      bubble.textContent = text;
+      elements.chatMessages.appendChild(bubble);
+      elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+    }
+
+    function startLocalExplainer(analysis) {
+      if (state.localExplainerFrame) cancelAnimationFrame(state.localExplainerFrame);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      elements.localExplainerCanvas.classList.remove('hidden');
+      elements.localVideoControls.classList.remove('hidden');
+      elements.demoVideo.classList.add('hidden');
+      elements.videoStatus.classList.remove('hidden');
+      elements.videoStatus.textContent = 'Funny local explainer is playing. Narrator is off by default so the browser does not read robotically.';
+      elements.downloadVideoBtn.href = './firstvid_demo.mp4';
+      elements.downloadVideoBtn.setAttribute('download', '');
+
+      state.explainerMode = 'story';
+      state.localExplainer = buildExplainerTimeline(analysis);
+      state.localExplainerElapsedBeforePause = 0;
+      state.localExplainerPlaying = true;
+      state.localNarrationOn = false;
+      state.localNarrationSceneIndex = -1;
+      state.localSfxSceneIndex = -1;
+      state.localExplainerStartedAt = performance.now();
+      updateLocalVideoControls();
+      drawLocalExplainer();
+    }
+
+    function buildExplainerTimeline(analysis) {
+      const blocks = Array.isArray(analysis.blocks) && analysis.blocks.length ? analysis.blocks : currentDemo().blocks;
+      const cast = makeCreativeCast(analysis, blocks);
+      const mode = state.explainerMode || 'story';
+      const scenesByMode = {
+        story: [
+        {
+          type: 'hook',
+          seconds: 6,
+          title: cast.hookTitle,
+          text: cast.hookText,
+          badge: 'Cold open'
+        },
+        {
+          type: 'cast',
+          seconds: 7,
+          title: 'Meet the cast',
+          text: cast.castText,
+          badge: 'Characters'
+        },
+        {
+          type: 'conflict',
+          seconds: 8,
+          title: cast.conflictTitle,
+          text: cast.conflictText,
+          badge: 'Funny problem'
+        },
+        {
+          type: 'block',
+          seconds: 9,
+          title: cast.turnTitle,
+          text: cast.turnText,
+          badge: 'The trick'
+        },
+        {
+          type: 'analogy',
+          seconds: 8,
+          title: cast.analogyTitle,
+          text: cast.analogyText,
+          badge: 'New picture'
+        },
+        {
+          type: 'questions',
+          seconds: 8,
+          title: 'Tiny brain boss battle',
+          text: cast.challengeText,
+          badge: 'Challenge'
+        },
+        {
+          type: 'try',
+          seconds: 8,
+          title: 'You get the steering wheel',
+          text: cast.tryText,
+          badge: 'Your move'
+        }
+        ],
+        quiz: [
+          {
+            type: 'hook',
+            seconds: 7,
+            title: cast.hookTitle,
+            text: cast.hookText,
+            badge: 'Warm-up'
+          },
+          {
+            type: 'question',
+            seconds: 9,
+            title: 'Pause and point',
+            text: cast.quizOne,
+            badge: 'Question 1'
+          },
+          {
+            type: 'block',
+            seconds: 10,
+            title: 'Reveal the tiny clue',
+            text: cast.turnText,
+            badge: 'Aha'
+          },
+          {
+            type: 'question',
+            seconds: 9,
+            title: 'Your brain gets a turn',
+            text: cast.quizTwo,
+            badge: 'Question 2'
+          },
+          {
+            type: 'analogy',
+            seconds: 10,
+            title: cast.analogyTitle,
+            text: cast.analogyText,
+            badge: 'Memory hook'
+          },
+          {
+            type: 'try',
+            seconds: 10,
+            title: 'Micro-mission',
+            text: cast.tryText,
+            badge: 'Try it'
+          }
+        ],
+        deep: [
+          {
+            type: 'hook',
+            seconds: 7,
+            title: 'Why this matters',
+            text: cast.whyText,
+            badge: 'Big picture'
+          },
+          {
+            type: 'background',
+            seconds: 10,
+            title: 'Background brick',
+            text: cast.backgroundText,
+            badge: 'Before'
+          },
+          {
+            type: 'cast',
+            seconds: 10,
+            title: 'Meet the moving parts',
+            text: cast.castText,
+            badge: 'Parts'
+          },
+          {
+            type: 'misconception',
+            seconds: 10,
+            title: 'Common trap',
+            text: cast.trapText,
+            badge: 'Careful'
+          },
+          {
+            type: 'block',
+            seconds: 11,
+            title: cast.turnTitle,
+            text: cast.turnText,
+            badge: 'Connect'
+          },
+          {
+            type: 'analogy',
+            seconds: 10,
+            title: cast.analogyTitle,
+            text: cast.analogyText,
+            badge: 'Anchor'
+          },
+          {
+            type: 'questions',
+            seconds: 10,
+            title: 'Check the anchor',
+            text: cast.challengeText,
+            badge: 'Check'
+          },
+          {
+            type: 'try',
+            seconds: 10,
+            title: 'Your turn, gently',
+            text: cast.tryText,
+            badge: 'Land it'
+          }
+        ],
+        remix: [
+          {
+            type: 'hook',
+            seconds: 6,
+            title: `${cast.theme.hero} opens a pop-up lab`,
+            text: cast.hookText,
+            badge: 'Remix'
+          },
+          {
+            type: 'experiment',
+            seconds: 9,
+            title: 'Tiny experiment',
+            text: cast.experimentText,
+            badge: 'Play'
+          },
+          {
+            type: 'conflict',
+            seconds: 8,
+            title: 'The wrong shortcut crashes',
+            text: cast.trapText,
+            badge: 'Oops'
+          },
+          {
+            type: 'block',
+            seconds: 9,
+            title: 'Fix it with one idea',
+            text: cast.turnText,
+            badge: 'Fix'
+          },
+          {
+            type: 'analogy',
+            seconds: 9,
+            title: cast.analogyTitle,
+            text: cast.analogyText,
+            badge: 'Sticky picture'
+          },
+          {
+            type: 'try',
+            seconds: 9,
+            title: 'Final mini-challenge',
+            text: cast.tryText,
+            badge: 'You'
+          }
+        ]
+      };
+      const scenes = scenesByMode[mode] || scenesByMode.story;
+
+      let start = 0;
+      return scenes.map((scene, index) => {
+        const item = {
+          ...scene,
+          voice: scene.voice || makeSceneVoiceLine(scene, cast, index),
+          start,
+          end: start + scene.seconds
+        };
+        start += scene.seconds;
+        return item;
+      });
+    }
+
+    function makeSceneVoiceLine(scene, cast, index) {
+      const quick = [
+        `Okay, lights up. ${cast.theme.hero} says: ${shorten(scene.text, 120)} Tiny idea first, dramatic music second.`,
+        `Here is the move. ${shorten(scene.text, 130)} Simple, useful, and nobody had to panic.`,
+        `Plot twist: ${shorten(scene.text, 130)} That is the little engine under the homework.`,
+        `Freeze frame. ${shorten(scene.text, 130)} If that part clicks, the big problem loses its cape.`,
+        `Watch the mechanism. ${shorten(scene.text, 130)} One job, then the next job, then the aha lands.`,
+        `Your brain gets the steering wheel now. ${shorten(scene.text, 120)} Do the next tiny move.`
+      ];
+      return quick[index % quick.length];
+    }
+
+    function makeCreativeCast(analysis, blocks) {
+      const subject = analysis.subject || 'this homework beast';
+      const problem = analysis.problem || analysis.detected || 'the mystery in front of us';
+      const first = blocks[0]?.body || 'find the smallest true idea';
+      const second = blocks[1]?.body || 'connect the next idea';
+      const question = (analysis.questions || [])[0] || 'What is the tiny thing doing the work?';
+      const questionTwo = (analysis.questions || [])[1] || 'What changes if one tiny part changes?';
+      const lower = `${subject} ${problem}`.toLowerCase();
+      const theme = lower.includes('plant') || lower.includes('photosynthesis') || lower.includes('leaf')
+          ? { kind: 'plants', hero: 'Chef Leaf', sidekick: 'Sunbeam Squad', object: 'solar kitchen', prop: 'sun snacks', gag: 'Chef Leaf cooks sunlight soup without a stove.' }
+        : lower.includes('cell') || lower.includes('biology')
+          ? { kind: 'cells', hero: 'Mayor Cell', sidekick: 'Organelle Crew', object: 'tiny city', prop: 'job badges', gag: 'The tiny city puts hard hats on its organelles.' }
+          : lower.includes('cookie') || lower.includes('multiply') || lower.includes('math')
+            ? { kind: 'cookies', hero: 'Captain Group', sidekick: 'Cookie Squad', object: 'snack parade', prop: 'equal trays', gag: 'Cookies line up like a very serious snack army.' }
+          : lower.includes('quantum')
+            ? { kind: 'quantum', hero: 'Professor Wobble', sidekick: 'Probability Cloud', object: 'tiny mystery stage', prop: 'chance map', gag: 'The dot refuses to pick a chair until someone checks.' }
+            : { kind: 'general', hero: 'Captain Why', sidekick: 'Tiny Idea Team', object: 'idea playground', prop: 'clue cards', gag: 'The clues do a tiny victory dance when they connect.' };
+
+      return {
+        theme,
+        hookTitle: `${theme.hero} grabs the mic`,
+        hookText: `Mission: ${shorten(problem, 112)} We are not stealing the answer; we are teaching your brain the trick.`,
+        castText: `${theme.hero}: “Tiny idea first!” ${theme.sidekick}: “Found it.” The whole lesson now has a steering wheel.`,
+        conflictTitle: 'The shortcut trips over itself',
+        conflictText: `The answer tries to sprint in wearing sunglasses. We stop it with this: ${shorten(first, 112)}`,
+        turnTitle: `${theme.sidekick} hits the aha button`,
+        turnText: `Next move: ${shorten(second, 118)} That is the click. Small, clean, no fog machine.`,
+        analogyTitle: `${theme.object}, but useful`,
+        analogyText: analysis.analogy || `${theme.gag} The joke works because each part has one job, and then the jobs connect.`,
+        whyText: `${subject} gets easier when the first handle is clear. Big topic, tiny doorknob.`,
+        backgroundText: `Collect the tiny facts on ${theme.prop}. If a fact cannot help, it waits outside with a snack.`,
+        trapText: `The trap is memorizing the whole blob. Shrink it until one piece becomes almost embarrassingly clear.`,
+        experimentText: `${theme.gag} Test one ${theme.prop} at a time. Still works? Keep it. Wobbles? Zoom in.`,
+        quizOne: `${question} Point to the smallest useful clue. Not the loudest clue. The useful one.`,
+        quizTwo: `${questionTwo} Give a tiny guess, then check it against the mechanism.`,
+        challengeText: `${question} Answer only that. One clean sentence beats five nervous paragraphs.`,
+        tryText: analysis.tryIt || 'Try one tiny move yourself. If it wobbles, ask the chat for the exact stuck point.'
+      };
+    }
+
+    function speakExplainer(analysis) {
+      if (!('speechSynthesis' in window)) return;
+      const scenes = state.localExplainer && state.localExplainer.length ? state.localExplainer : buildExplainerTimeline(analysis);
+      const narration = [
+        'Alright, tiny idea detective. Fast, funny, and no answer stealing.',
+        ...scenes.map((scene) => `${scene.title}. ${scene.text}`),
+        'Boom. Now you do the last tiny move.'
+      ].join(' ');
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(narration);
+      utterance.rate = 1.06;
+      utterance.pitch = 1.24;
+      utterance.volume = state.localNarrationVolume;
+      const voice = pickNarratorVoice();
+      if (voice) utterance.voice = voice;
+      utterance.onend = utterance.onerror = () => {
+        state.localNarrationOn = false;
+        updateLocalVideoControls();
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function speakLocalScene(scene, index) {
+      if (!('speechSynthesis' in window) || !state.localNarrationOn || !scene) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(scene.voice || `${scene.title}. ${scene.text}`);
+      utterance.rate = 1.12;
+      utterance.pitch = 1.28;
+      utterance.volume = state.localNarrationVolume;
+      const voice = pickNarratorVoice();
+      if (voice) utterance.voice = voice;
+      utterance.onend = () => {
+        if (state.localNarrationSceneIndex === index) {
+          state.localNarrationSceneIndex = index;
+        }
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function pickNarratorVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return null;
+      return voices.find((voice) => /google.*english|microsoft.*guy|microsoft.*david|microsoft.*mark|english.*us/i.test(`${voice.name} ${voice.lang}`))
+        || voices.find((voice) => /^en[-_]/i.test(voice.lang))
+        || voices[0];
+    }
+
+    function explainerModeLabel() {
+      return {
+        story: 'Skit',
+        quiz: 'Quiz',
+        deep: 'Deep Dive',
+        remix: 'Remix'
+      }[state.explainerMode] || 'Skit';
+    }
+
+    function updateExplainerModeButtons() {
+      document.querySelectorAll('[data-explainer-mode]').forEach((button) => {
+        const active = button.dataset.explainerMode === state.explainerMode;
+        button.classList.toggle('bg-blue-600', active);
+        button.classList.toggle('text-white', active);
+        button.classList.toggle('bg-white', !active);
+        button.classList.toggle('text-slate-700', !active);
+        button.classList.toggle('ring-1', !active);
+        button.classList.toggle('ring-slate-200', !active);
+      });
+    }
+
+    function drawLocalExplainer() {
+      if (!state.localExplainerPlaying) return;
+      const canvas = elements.localExplainerCanvas;
+      const ctx = canvas.getContext('2d');
+      const width = 1280;
+      const height = 720;
+      if (canvas.width !== width) canvas.width = width;
+      if (canvas.height !== height) canvas.height = height;
+
+      const timeline = state.localExplainer || [];
+      const total = timeline.length ? timeline[timeline.length - 1].end : 1;
+      const elapsed = ((performance.now() - state.localExplainerStartedAt) / 1000) % total;
+      const sceneIndex = Math.max(0, timeline.findIndex((item) => elapsed >= item.start && elapsed < item.end));
+      const scene = timeline[sceneIndex] || timeline[0];
+      const localT = scene ? (elapsed - scene.start) / Math.max(1, scene.seconds) : 0;
+
+      if (state.localNarrationOn && sceneIndex !== state.localNarrationSceneIndex) {
+        state.localNarrationSceneIndex = sceneIndex;
+        speakLocalScene(scene, sceneIndex);
+      }
+      if (sceneIndex !== state.localSfxSceneIndex) {
+        state.localSfxSceneIndex = sceneIndex;
+        playSceneSfx(scene?.type || 'hook');
+      }
+
+      paintExplainerScene(ctx, width, height, scene, localT, elapsed / total);
+      state.localExplainerFrame = requestAnimationFrame(drawLocalExplainer);
+    }
+
+    function playSceneSfx(type) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      try {
+        state.localSfxContext = state.localSfxContext || new AudioCtx();
+        const ctx = state.localSfxContext;
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+        const now = ctx.currentTime;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.08, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+        gain.connect(ctx.destination);
+
+        const notes = {
+          hook: [440, 660],
+          cast: [523, 784],
+          conflict: [180, 130],
+          block: [392, 523, 659],
+          analogy: [330, 494, 740],
+          questions: [740, 554],
+          question: [740, 554],
+          try: [659, 880],
+          experiment: [440, 554, 659],
+          background: [294, 392],
+          misconception: [220, 146]
+        }[type] || [440, 660];
+
+        notes.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          osc.type = type === 'conflict' || type === 'misconception' ? 'sawtooth' : 'triangle';
+          osc.frequency.setValueAtTime(freq, now + index * 0.07);
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.12, now + index * 0.07 + 0.06);
+          osc.connect(gain);
+          osc.start(now + index * 0.07);
+          osc.stop(now + index * 0.07 + 0.12);
+        });
+      } catch {
+        // Audio effects are decorative; keep the lesson moving if the browser blocks them.
+      }
+    }
+
+    function toggleLocalPlayback() {
+      if (!state.localExplainer || !state.localExplainer.length) return;
+      if (state.localExplainerPlaying) {
+        state.localExplainerElapsedBeforePause = performance.now() - state.localExplainerStartedAt;
+        state.localExplainerPlaying = false;
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        if (state.localExplainerFrame) cancelAnimationFrame(state.localExplainerFrame);
+        state.localExplainerFrame = null;
+      } else {
+        state.localExplainerPlaying = true;
+        state.localNarrationSceneIndex = -1;
+        state.localSfxSceneIndex = -1;
+        state.localExplainerStartedAt = performance.now() - state.localExplainerElapsedBeforePause;
+        drawLocalExplainer();
+      }
+      updateLocalVideoControls();
+    }
+
+    function toggleLocalNarration() {
+      if (!('speechSynthesis' in window) || !state.latestAnalysis) {
+        showToast('Narrator is not supported in this browser.');
+        return;
+      }
+      if (state.localNarrationOn) {
+        window.speechSynthesis.cancel();
+        state.localNarrationOn = false;
+        elements.videoStatus.textContent = 'Narrator off. Visual comedy and sound effects keep playing.';
+      } else {
+        state.localNarrationOn = true;
+        state.localNarrationSceneIndex = -1;
+        elements.videoStatus.textContent = 'Optional browser narrator on. If the voice sounds robotic, tap this off.';
+      }
+      updateLocalVideoControls();
+    }
+
+    function adjustLocalNarrationVolume(delta) {
+      state.localNarrationVolume = Math.max(0.2, Math.min(1, state.localNarrationVolume + delta));
+      if (state.localNarrationOn && state.latestAnalysis) {
+        window.speechSynthesis.cancel();
+        state.localNarrationSceneIndex = -1;
+      }
+      elements.videoStatus.classList.remove('hidden');
+      elements.videoStatus.textContent = `Narrator volume: ${Math.round(state.localNarrationVolume * 100)}%.`;
+    }
+
+    function updateLocalVideoControls() {
+      elements.localPlayBtn.innerHTML = state.localExplainerPlaying
+        ? '<i class="fa-solid fa-pause" aria-hidden="true"></i>'
+        : '<i class="fa-solid fa-play" aria-hidden="true"></i>';
+      elements.localPlayBtn.setAttribute('aria-label', state.localExplainerPlaying ? 'Pause local explainer' : 'Play local explainer');
+      elements.localVoiceBtn.innerHTML = state.localNarrationOn
+        ? '<i class="fa-solid fa-comment-dots" aria-hidden="true"></i>'
+        : '<i class="fa-solid fa-comment-slash" aria-hidden="true"></i>';
+      elements.localVoiceBtn.setAttribute('aria-label', state.localNarrationOn ? 'Mute narrator' : 'Turn narrator on');
+    }
+
+    function paintExplainerScene(ctx, width, height, scene, localT, progress) {
+      const palettes = {
+        hook: ['#73d2ff', '#fff06a', '#2563eb', '#ff6b6b'],
+        cast: ['#7cf7bf', '#c7b8ff', '#0891b2', '#f59e0b'],
+        conflict: ['#ff9b8a', '#fff06a', '#dc2626', '#7c3aed'],
+        block: ['#7cf7bf', '#fff9f2', '#059669', '#2563eb'],
+        analogy: ['#c7b8ff', '#fff06a', '#7c3aed', '#14b8a6'],
+        questions: ['#ff9bd2', '#eef7ff', '#db2777', '#2563eb'],
+        question: ['#93c5fd', '#fde68a', '#2563eb', '#f97316'],
+        background: ['#8ddcff', '#bbf7d0', '#0891b2', '#f59e0b'],
+        misconception: ['#fecaca', '#ffedd5', '#dc2626', '#111827'],
+        experiment: ['#5eead4', '#fef08a', '#0f766e', '#e11d48'],
+        try: ['#fff06a', '#86efac', '#ca8a04', '#2563eb']
+      };
+      const colors = palettes[scene?.type || 'hook'] || palettes.hook;
+      const bounce = Math.sin(localT * Math.PI);
+      const wiggle = Math.sin(localT * Math.PI * 2);
+      const analysis = state.latestAnalysis || currentDemo();
+      const blocks = Array.isArray(analysis.blocks) && analysis.blocks.length ? analysis.blocks : currentDemo().blocks;
+      const theme = makeCreativeCast(analysis, blocks).theme;
+
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, colors[0]);
+      gradient.addColorStop(1, colors[1]);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      drawStageBackdrop(ctx, width, height, colors, localT);
+
+      ctx.fillStyle = colors[2];
+      roundRect(ctx, 78, 58, 238, 60, 18);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 25px system-ui, sans-serif';
+      ctx.fillText(scene?.badge || 'FirstVid', 104, 96);
+
+      drawMotionMarks(ctx, 962, 126 + wiggle * 8, colors[3]);
+      drawMascot(ctx, 1054, 152 - bounce * 14, 1.05, colors[2], colors[3], localT, scene?.type);
+      drawTopicWorld(ctx, theme, scene?.type || 'hook', localT, colors);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      roundRect(ctx, 78, 152, 660, 398, 26);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(20,33,61,0.12)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.fillStyle = '#14213d';
+      ctx.font = '900 48px "Trebuchet MS", system-ui, sans-serif';
+      drawWrappedText(ctx, scene?.title || 'FirstVid', 112, 220, 570, 56, 2);
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '800 29px system-ui, sans-serif';
+      drawWrappedText(ctx, scene?.text || '', 116, 342, 560, 41, 4);
+
+      const gag = theme.gag || 'The tiny idea does a victory dance.';
+      drawSpeechBubble(ctx, 760, 402 + wiggle * 8, 370, 106, gag, colors[3]);
+
+      ctx.fillStyle = 'rgba(20,33,61,0.16)';
+      roundRect(ctx, 94, 626, width - 188, 18, 9);
+      ctx.fill();
+      ctx.fillStyle = colors[2];
+      roundRect(ctx, 94, 626, (width - 188) * progress, 18, 9);
+      ctx.fill();
+    }
+
+    function drawSillyVisual(ctx, type, t, color) {
+      ctx.fillStyle = color;
+      drawMotionMarks(ctx, 880, 540 + Math.sin(t * Math.PI * 2) * 8, color);
+    }
+
+    function drawStageBackdrop(ctx, width, height, colors, t) {
+      ctx.fillStyle = 'rgba(255,255,255,0.62)';
+      roundRect(ctx, 42, 36, width - 84, height - 72, 34);
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(20,33,61,0.10)';
+      for (let i = 0; i < 9; i++) {
+        const x = 70 + i * 142 + Math.sin(t * Math.PI * 2 + i) * 4;
+        roundRect(ctx, x, 586 + (i % 2) * 10, 84, 18, 9);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = colors[3];
+      ctx.globalAlpha = 0.14;
+      for (let i = 0; i < 12; i++) {
+        const x = 120 + i * 96;
+        const y = 90 + (i % 4) * 28;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 18, y + 34);
+        ctx.lineTo(x - 18, y + 34);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawTopicWorld(ctx, theme, type, t, colors) {
+      const x = 790;
+      const y = 236;
+      drawCharacter(ctx, x + 28, y + 58 + Math.sin(t * Math.PI * 2) * 9, 1.1, colors[2], colors[3], t, 'hero');
+      drawCharacter(ctx, x + 194, y + 76 - Math.sin(t * Math.PI * 2) * 7, 0.82, '#ffffff', colors[2], t + 0.25, 'sidekick');
+
+      if (type === 'conflict' || type === 'misconception') {
+        drawWrongShortcut(ctx, x + 284, y + 20, t);
+      }
+
+      if (theme.kind === 'cookies') {
+        drawCookieParade(ctx, x - 8, y + 224, t, type);
+      } else if (theme.kind === 'plants') {
+        drawSolarKitchen(ctx, x + 2, y + 206, t, type);
+      } else if (theme.kind === 'cells') {
+        drawCellCity(ctx, x + 4, y + 214, t, type);
+      } else if (theme.kind === 'quantum') {
+        drawQuantumStage(ctx, x + 8, y + 214, t, type);
+      } else {
+        drawClueLab(ctx, x + 8, y + 214, t, type);
+      }
+
+      if (type === 'questions' || type === 'question') {
+        ctx.fillStyle = '#14213d';
+        ctx.font = '900 92px system-ui, sans-serif';
+        ctx.fillText('?', x + 312, y + 64 + Math.sin(t * Math.PI * 2) * 12);
+      }
+      if (type === 'try') {
+        ctx.fillStyle = colors[3];
+        ctx.font = '900 70px system-ui, sans-serif';
+        ctx.fillText('GO!', x + 270, y + 64 + Math.sin(t * Math.PI * 2) * 10);
+      }
+    }
+
+    function drawCharacter(ctx, x, y, scale, bodyColor, accentColor, t, role) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      const bob = Math.sin(t * Math.PI * 2) * 4;
+      ctx.fillStyle = 'rgba(20,33,61,0.18)';
+      ctx.beginPath();
+      ctx.ellipse(0, 104, 58, 13, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = bodyColor;
+      roundRect(ctx, -44, -8 + bob, 88, 100, 28);
+      ctx.fill();
+      ctx.strokeStyle = '#14213d';
+      ctx.lineWidth = 5;
+      ctx.stroke();
+
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      ctx.arc(0, -30 + bob, 54, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(-18, -38 + bob, 13, 0, Math.PI * 2);
+      ctx.arc(20, -38 + bob, 13, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#14213d';
+      ctx.beginPath();
+      ctx.arc(-14 + Math.sin(t * Math.PI * 2) * 3, -35 + bob, 5, 0, Math.PI * 2);
+      ctx.arc(24 + Math.sin(t * Math.PI * 2) * 3, -35 + bob, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#14213d';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(2, -16 + bob, 18, 0.12, Math.PI - 0.12);
+      ctx.stroke();
+
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      ctx.moveTo(-44, 30 + bob);
+      ctx.lineTo(-74, 12 + Math.sin(t * Math.PI * 2 + 1) * 12);
+      ctx.moveTo(44, 30 + bob);
+      ctx.lineTo(74, 12 + Math.sin(t * Math.PI * 2 + 2) * 12);
+      ctx.stroke();
+
+      if (role === 'hero') {
+        ctx.fillStyle = '#fff06a';
+        ctx.beginPath();
+        ctx.moveTo(-34, -78 + bob);
+        ctx.lineTo(-10, -110 + bob);
+        ctx.lineTo(14, -78 + bob);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#14213d';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawMascot(ctx, x, y, scale, bodyColor, accentColor, t, type) {
+      drawCharacter(ctx, x, y, scale, '#ffffff', bodyColor, t, 'sidekick');
+      ctx.fillStyle = accentColor;
+      ctx.font = '900 42px system-ui, sans-serif';
+      const label = type === 'try' ? 'try!' : type === 'conflict' ? 'nope' : 'aha';
+      ctx.fillText(label, x - 48, y + 110);
+    }
+
+    function drawCookieParade(ctx, x, y, t, type) {
+      for (let row = 0; row < 2; row++) {
+        for (let i = 0; i < 5; i++) {
+          const px = x + i * 62;
+          const py = y + row * 54 + Math.sin(t * Math.PI * 2 + i) * 6;
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(px, py, 23, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#78350f';
+          for (let c = 0; c < 4; c++) {
+            ctx.beginPath();
+            ctx.arc(px - 9 + c * 6, py - 8 + (c % 2) * 12, 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          if (type === 'cast' || type === 'block') {
+            ctx.strokeStyle = '#14213d';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(px - 7, py - 2, 3, 0, Math.PI * 2);
+            ctx.arc(px + 8, py - 2, 3, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function drawSolarKitchen(ctx, x, y, t, type) {
+      ctx.fillStyle = '#facc15';
+      ctx.beginPath();
+      ctx.arc(x + 260, y - 90, 42 + Math.sin(t * Math.PI * 2) * 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 6;
+      for (let i = 0; i < 10; i++) {
+        const a = i * Math.PI / 5;
+        ctx.beginPath();
+        ctx.moveTo(x + 260 + Math.cos(a) * 56, y - 90 + Math.sin(a) * 56);
+        ctx.lineTo(x + 260 + Math.cos(a) * 78, y - 90 + Math.sin(a) * 78);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#22c55e';
+      roundRect(ctx, x + 40, y - 20, 82, 118, 42);
+      ctx.fill();
+      roundRect(ctx, x + 142, y - 36, 82, 134, 42);
+      ctx.fill();
+      ctx.fillStyle = '#14532d';
+      ctx.font = '900 30px system-ui, sans-serif';
+      ctx.fillText(type === 'experiment' ? 'cook!' : 'light', x + 70, y + 130);
+    }
+
+    function drawCellCity(ctx, x, y, t, type) {
+      ctx.fillStyle = '#a7f3d0';
+      ctx.beginPath();
+      ctx.ellipse(x + 170, y + 22, 190, 96, Math.sin(t * Math.PI * 2) * 0.03, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#047857';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+      const parts = [['N', '#60a5fa', -70, -6], ['E', '#f472b6', 6, 32], ['P', '#facc15', 84, -18]];
+      parts.forEach(([label, fill, dx, dy], index) => {
+        ctx.fillStyle = fill;
+        ctx.beginPath();
+        ctx.arc(x + 170 + dx, y + 22 + dy + Math.sin(t * Math.PI * 2 + index) * 5, 30, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#14213d';
+        ctx.font = '900 24px system-ui, sans-serif';
+        ctx.fillText(label, x + 160 + dx, y + 31 + dy);
+      });
+    }
+
+    function drawQuantumStage(ctx, x, y, t, type) {
+      ctx.strokeStyle = '#7c3aed';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      for (let i = 0; i < 180; i++) {
+        const px = x + i * 2;
+        const py = y + 28 + Math.sin(i / 14 + t * Math.PI * 2) * 42;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#fff06a';
+      const dotX = x + 180 + Math.sin(t * Math.PI * 2) * 72;
+      ctx.beginPath();
+      ctx.arc(dotX, y + 28, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#14213d';
+      ctx.stroke();
+      ctx.fillStyle = '#14213d';
+      ctx.font = '900 24px system-ui, sans-serif';
+      ctx.fillText(type === 'question' ? 'where?' : 'maybe', x + 128, y + 112);
+    }
+
+    function drawClueLab(ctx, x, y, t, type) {
+      ['1', '2', '3'].forEach((label, index) => {
+        const px = x + index * 104;
+        const py = y + Math.sin(t * Math.PI * 2 + index) * 9;
+        ctx.fillStyle = ['#bfdbfe', '#bbf7d0', '#fde68a'][index];
+        roundRect(ctx, px, py, 78, 90, 18);
+        ctx.fill();
+        ctx.strokeStyle = '#14213d';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.fillStyle = '#14213d';
+        ctx.font = '900 42px system-ui, sans-serif';
+        ctx.fillText(label, px + 27, py + 58);
+      });
+      if (type === 'block' || type === 'try') {
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(x + 78, y + 44);
+        ctx.lineTo(x + 104, y + 44);
+        ctx.moveTo(x + 182, y + 44);
+        ctx.lineTo(x + 208, y + 44);
+        ctx.stroke();
+      }
+    }
+
+    function drawWrongShortcut(ctx, x, y, t) {
+      ctx.save();
+      ctx.translate(x, y + Math.sin(t * Math.PI * 2) * 8);
+      ctx.rotate(Math.sin(t * Math.PI * 2) * 0.08);
+      ctx.fillStyle = '#111827';
+      roundRect(ctx, -52, -34, 104, 68, 18);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 22px system-ui, sans-serif';
+      ctx.fillText('RUSH', -31, 8);
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 9;
+      ctx.beginPath();
+      ctx.moveTo(-64, -48);
+      ctx.lineTo(64, 48);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawSpeechBubble(ctx, x, y, width, height, text, color) {
+      ctx.fillStyle = '#ffffff';
+      roundRect(ctx, x, y, width, height, 24);
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x + 44, y + height - 2);
+      ctx.lineTo(x + 72, y + height + 28);
+      ctx.lineTo(x + 96, y + height - 2);
+      ctx.closePath();
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#14213d';
+      ctx.font = '900 22px system-ui, sans-serif';
+      drawWrappedText(ctx, text, x + 24, y + 38, width - 48, 30, 2);
+    }
+
+    function drawMotionMarks(ctx, x, y, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 7;
+      ctx.lineCap = 'round';
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(x + i * 28, y + i * 6, 18 + i * 7, -0.8, 0.6);
+        ctx.stroke();
+      }
+      ctx.lineCap = 'butt';
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 5) {
+      const words = String(text || '').split(/\s+/);
+      const lines = [];
+      let line = '';
+      for (const word of words) {
+        const test = line ? `${line} ${word}` : word;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      }
+      if (line) lines.push(line);
+      lines.slice(0, maxLines).forEach((part, index) => {
+        const suffix = index === maxLines - 1 && lines.length > maxLines ? '...' : '';
+        ctx.fillText(part + suffix, x, y + index * lineHeight);
+      });
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function getNarrationText() {
+      const demo = state.latestAnalysis || currentDemo();
+      const blockText = demo.blocks.map((block) => `${block.title}. ${block.body}`).join(' ');
+      return `${demo.subject}. ${demo.problem}. ${blockText} Analogy. ${demo.analogy} Questions to think about. ${demo.questions.join(' ')} Try it yourself. ${demo.tryIt}`;
+    }
+
+    function toggleReadAloud() {
+      if (!('speechSynthesis' in window)) {
+        showToast('This browser does not support read aloud yet.');
+        return;
+      }
+
+      if (state.speaking) {
+        window.speechSynthesis.cancel();
+        state.speaking = false;
+        elements.readBtn.innerHTML = '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read Aloud</span>';
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(getNarrationText());
+      utterance.rate = 0.88;
+      utterance.pitch = 1.12;
+      utterance.volume = 1;
+      utterance.onend = utterance.onerror = () => {
+        state.speaking = false;
+        elements.readBtn.innerHTML = '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read Aloud</span>';
+      };
+
+      state.speaking = true;
+      elements.readBtn.innerHTML = '<i class="fa-solid fa-stop" aria-hidden="true"></i><span>Stop Reading</span>';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function startSampleVideo() {
+      const video = elements.demoVideo;
+      video.muted = true;
+      const playAttempt = video.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt.catch(() => {
+          elements.videoStatus.classList.remove('hidden');
+          elements.videoStatus.textContent = 'Tap play when you are ready. Some browsers pause autoplay, even when muted.';
+        });
+      }
+    }
+
+    function renderStoryboard(demo) {
+      elements.storyboardGrid.innerHTML = demo.storyboardCaptions.map((caption, index) => `
+        <figure class="rounded-lg border border-slate-200 bg-white p-3">
+          <img src="./images/frame${index + 1}.jpg" alt="Storyboard frame ${index + 1}" class="aspect-video w-full rounded-lg object-cover" />
+          <figcaption class="mt-3 text-sm font-bold leading-6 text-slate-700">
+            <span class="text-blue-700">Frame ${index + 1}:</span> ${caption}
+          </figcaption>
+        </figure>
+      `).join('');
+    }
+
+    function showToast(message) {
+      elements.coachNote.textContent = message;
+    }
+
+    function openModal(id) {
+      $(id).classList.add('open');
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('open');
+    }
+
+    async function startCamera() {
+      openModal('cameraModal');
+      elements.cameraMessage.textContent = 'Asking for camera permission...';
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('Camera is not supported in this browser.');
+        }
+        state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        elements.cameraVideo.srcObject = state.stream;
+        elements.cameraMessage.textContent = 'Line up the homework page, then tap Capture.';
+      } catch (error) {
+        elements.cameraMessage.textContent = `${error.message} Tip: camera usually requires localhost or HTTPS. Try upload instead.`;
+      }
+    }
+
+    function stopCamera() {
+      if (state.stream) {
+        state.stream.getTracks().forEach((track) => track.stop());
+        state.stream = null;
+      }
+      elements.cameraVideo.srcObject = null;
+    }
+
+    function capturePhoto() {
+      const video = elements.cameraVideo;
+      if (!video.videoWidth) {
+        elements.cameraMessage.textContent = 'No camera image yet. Try again or use upload.';
+        return;
+      }
+      const canvas = elements.cameraCanvas;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      state.currentDemoKey = 'custom';
+      showPreview(dataUrl, 'Camera photo captured.');
+      stopCamera();
+      closeModal(elements.cameraModal);
+    }
+
+    function resetApp() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      state.currentDemoKey = null;
+      state.imageLoaded = false;
+      state.speaking = false;
+      elements.fileInput.value = '';
+      elements.imagePreview.src = '';
+      state.imageDataUrl = '';
+      state.textInput = '';
+      elements.writtenInput.value = '';
+      state.latestAnalysis = null;
+      state.chatHistory = [];
+      state.videoGenerationActive = false;
+      state.explainerMode = 'story';
+      state.localExplainerPlaying = false;
+      state.localExplainerElapsedBeforePause = 0;
+      state.localNarrationOn = false;
+      elements.previewWrap.classList.add('hidden');
+      elements.analysisStep.classList.add('hidden');
+      elements.videoStep.classList.add('hidden');
+      elements.videoStatus.classList.add('hidden');
+      elements.readBtn.innerHTML = '<i class="fa-solid fa-volume-high" aria-hidden="true"></i><span>Read Aloud</span>';
+      elements.coachNote.textContent = 'Pick a homework example. We’ll go slowly and kindly.';
+      setProgress(1);
+      elements.demoVideo.pause();
+      elements.demoVideo.currentTime = 0;
+      if (state.localExplainerFrame) cancelAnimationFrame(state.localExplainerFrame);
+      state.localExplainerFrame = null;
+      elements.localVideoControls.classList.add('hidden');
+      elements.demoVideo.src = './firstvid_demo.mp4';
+      elements.downloadVideoBtn.href = './firstvid_demo.mp4';
+      elements.downloadVideoBtn.setAttribute('download', '');
+    }
+
+    elements.chooseFileBtn.addEventListener('click', () => elements.fileInput.click());
+    elements.fileInput.addEventListener('change', (event) => handleFile(event.target.files[0]));
+    elements.useWrittenBtn.addEventListener('click', useWrittenInput);
+    elements.clearWrittenBtn.addEventListener('click', () => {
+      elements.writtenInput.value = '';
+      state.textInput = '';
+      showToast('Written input cleared.');
+    });
+    elements.analyzeBtn.addEventListener('click', analyzeCurrentImage);
+    elements.removeImageBtn.addEventListener('click', resetApp);
+    elements.readBtn.addEventListener('click', toggleReadAloud);
+    $('parentsBtn').addEventListener('click', () => openModal('parentsModal'));
+    $('cameraBtn').addEventListener('click', startCamera);
+    $('closeCameraBtn').addEventListener('click', () => {
+      stopCamera();
+      closeModal(elements.cameraModal);
+    });
+    $('retryCameraBtn').addEventListener('click', startCamera);
+    $('captureBtn').addEventListener('click', capturePhoto);
+    elements.generateVideoBtn.addEventListener('click', () => generateAIShortVideo());
+    elements.localPlayBtn.addEventListener('click', toggleLocalPlayback);
+    elements.localVoiceBtn.addEventListener('click', toggleLocalNarration);
+    elements.localVolumeDownBtn.addEventListener('click', () => adjustLocalNarrationVolume(-0.15));
+    elements.localVolumeUpBtn.addEventListener('click', () => adjustLocalNarrationVolume(0.15));
+    elements.sendChatBtn.addEventListener('click', sendChatMessage);
+    elements.chatInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendChatMessage();
+      }
+    });
+    $('resetBtn').addEventListener('click', resetApp);
+
+    document.querySelectorAll('.closeModal').forEach((button) => {
+      button.addEventListener('click', () => closeModal(button.closest('.modal')));
+    });
+
+    document.querySelectorAll('.modal').forEach((modal) => {
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          if (modal.id === 'cameraModal') stopCamera();
+          closeModal(modal);
+        }
+      });
+    });
+
+    elements.dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      elements.dropZone.classList.add('drop-ready');
+    });
+    elements.dropZone.addEventListener('dragleave', () => elements.dropZone.classList.remove('drop-ready'));
+    elements.dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      elements.dropZone.classList.remove('drop-ready');
+      handleFile(event.dataTransfer.files[0]);
+    });
+
+    elements.demoVideo.addEventListener('error', () => {
+      elements.videoStatus.classList.remove('hidden');
+      elements.videoStatus.textContent = 'The sample MP4 is missing or cannot be played. The storyboard and script still work offline.';
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.modal.open').forEach((modal) => {
+          if (modal.id === 'cameraModal') stopCamera();
+          closeModal(modal);
+        });
+      }
+    });
+
+    renderDemoCards();
+    renderStoryboard(demos.cookies);
+    setProgress(1);
+
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
