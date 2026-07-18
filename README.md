@@ -1,6 +1,6 @@
 # FirstVid
 
-FirstVid, or First Principles Homework Helper, is a local homework explainer that captures a homework image or written task, explains it from first principles, and can optionally ask Grok for sharper analysis or a cinematic short clip.
+FirstVid, or First Principles Homework Helper, is an open-source local homework explainer that captures a homework image or written task, explains it from first principles, and can optionally ask Grok for sharper analysis or a cinematic short clip.
 
 The current design is Grok-required for new Step 2 analyses: FirstVid will not pretend it understood homework if Grok has no credits. Saved Grok analyses and the local Step 3 explainer still help reduce repeat credit use.
 
@@ -8,6 +8,7 @@ The current design is Grok-required for new Step 2 analyses: FirstVid will not p
 
 - `index.html` - frontend app, built with Tailwind CDN, Font Awesome CDN, and vanilla JavaScript.
 - `server.js` - tiny local Node backend for xAI/Grok analysis and video generation.
+- `desktop/main.js` - Electron desktop wrapper for installable Windows builds.
 - `package.json` - local start script.
 - `.env.example` - local xAI configuration template.
 - `firstvid_demo.mp4` - local fallback/sample video.
@@ -48,6 +49,8 @@ XAI_API_KEY=xai-your-real-key-here
 
 Do not paste real keys into chat or commit `.env`.
 
+Installed desktop users can also open FirstVid and use the **API Key** button. The key is saved only on that computer.
+
 
 The app will now:
 
@@ -55,7 +58,7 @@ The app will now:
 - Keep your API key out of the browser.
 - Send captured homework images, typed homework text, or pasted URLs to Grok for Step 2.
 - Return structured first-principles explanation JSON.
-- Start a local animated explainer immediately for Step 3, with Skit, Quiz, Deep Dive, and Remix modes.
+- Start a local animated explainer immediately for Step 3.
 - Offer Grok Imagine as an optional cinematic clip.
 - Download generated videos into `generated/` when possible.
 - Cache completed Grok lessons in `.firstvid-cache/lessons/` so repeated topics load instantly and use no new credits.
@@ -114,14 +117,48 @@ The frontend renders the returned JSON into:
 - video script
 - storyboard captions
 
+## Windows Installable App
+
+FirstVid includes an Electron wrapper so Windows users can install it like a normal desktop app.
+
+Developer build/run:
+
+```bash
+npm install
+npm run desktop
+```
+
+Create a Windows installer:
+
+```bash
+npm run dist:win
+```
+
+The installer output appears in:
+
+```text
+dist/
+```
+
+The installed app:
+
+- starts its own local FirstVid server automatically
+- stores the user’s xAI key in the user app-data folder
+- stores generated videos and lesson cache in the user app-data folder
+- keeps API keys out of the frontend and out of GitHub
+
+## iOS Installable App
+
+iOS does not allow ordinary unsigned downloaded apps. The working open distribution paths are:
+
+- **PWA path:** host FirstVid over HTTPS, open it in Safari, then use Share -> Add to Home Screen.
+- **App Store/TestFlight path:** wrap the web app with Capacitor or a native shell, then sign it with an Apple Developer account.
+
+For immediate use, the PWA path is the realistic open-source route. Camera and service worker features require HTTPS or localhost.
+
 ## How Step 3 Works
 
-FirstVid uses a local canvas explainer as the default "video" experience. It is interactive, immediate, and can run for 50-90 seconds or more because it is generated in the browser, not by a paid video API. The child can switch styles:
-
-- Skit - funny character walkthrough
-- Quiz - pause-and-answer prompts
-- Deep Dive - slower background and misconceptions
-- Remix - playful alternate angle
+FirstVid uses a local canvas explainer as the default "video" experience. It is interactive, immediate, and can run for 50-90 seconds or more because it is generated in the browser, not by a paid video API.
 
 The optional cinematic AI clip sends the Step 2 video prompt/script to:
 
@@ -186,7 +223,16 @@ FirstVid includes a web app manifest and service worker, so it can be installed 
 - Android: open in Chrome, then use “Add to Home screen” or the install prompt.
 - Apple/iPhone/iPad: open in Safari, then use Share -> Add to Home Screen.
 
-For a distributable desktop/mobile product, package the same frontend/backend idea with Tauri, Electron, Capacitor, or a hosted backend.
+For Windows distribution, use the included Electron build. For iOS distribution beyond PWA install, use Capacitor plus Apple signing.
+
+## Open Source
+
+FirstVid is licensed under the MIT License. Contributions are welcome.
+
+- Read `CONTRIBUTING.md`.
+- Do not commit real API keys.
+- Do not commit private student homework captures.
+- Keep the app focused on understanding from first principles, not answer dumping.
 
 ## Code Protection Reality
 

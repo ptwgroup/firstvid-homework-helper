@@ -4,4 +4,5 @@ node_modules/
 generated/
 .firstvid-cache/
 review_frames/
+dist/
 *.log

@@ -1,13 +1,58 @@
 {
-  "name": "firstvid-local-ai",
+  "name": "firstvid",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
+  "license": "MIT",
+  "author": "FirstVid contributors",
+  "main": "desktop/main.js",
   "description": "FirstVid local homework explainer with a tiny Node backend for xAI/Grok analysis and video generation.",
   "scripts": {
     "setup:key": "powershell -ExecutionPolicy Bypass -File scripts/set-xai-key.ps1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "desktop": "electron .",
+    "dist:win": "electron-builder --win nsis --x64",
+    "check": "node --check server.js && node scripts/check-frontend.js"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "app.firstvid.homeworkhelper",
+    "productName": "FirstVid",
+    "copyright": "Copyright © 2026 FirstVid contributors",
+    "files": [
+      "desktop/**/*",
+      "images/**/*",
+      "scripts/check-frontend.js",
+      "server.js",
+      "index.html",
+      "manifest.webmanifest",
+      "sw.js",
+      "firstvid_demo.mp4",
+      "package.json",
+      "README.md",
+      "LICENSE"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FirstVid"
+    }
   }
 }

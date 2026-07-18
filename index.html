@@ -118,6 +118,10 @@
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
+          <button id="apiKeyBtn" class="focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 font-bold text-blue-800 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md">
+            <i class="fa-solid fa-key" aria-hidden="true"></i>
+            API Key
+          </button>
           <button id="resetBtn" class="focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
             <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
             Reset
@@ -364,6 +368,36 @@
         </aside>
       </section>
     </main>
+  </div>
+
+  <div id="apiKeyModal" class="modal fixed inset-0 z-50 items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="apiKeyTitle">
+    <div class="w-full max-w-xl rounded-lg bg-white p-6 shadow-soft">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.18em] text-blue-700">Local Setup</p>
+          <h2 id="apiKeyTitle" class="font-display text-3xl font-black text-slate-950">Add Your xAI Key</h2>
+        </div>
+        <button class="closeModal focus-ring grid h-11 w-11 place-items-center rounded-lg bg-slate-100 text-slate-700" aria-label="Close API key setup">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p class="mt-4 font-medium leading-7 text-slate-700">
+        FirstVid needs a Grok/xAI API key for new homework analysis. The key is saved only on this computer and is never put into the open-source code.
+      </p>
+      <label for="xaiKeyInput" class="mt-5 block font-display text-lg font-black text-slate-950">xAI API key</label>
+      <input id="xaiKeyInput" type="password" autocomplete="off" spellcheck="false" class="focus-ring mt-2 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 font-mono text-sm text-slate-800" placeholder="xai-..." />
+      <div id="configStatus" class="mt-3 rounded-lg bg-slate-50 p-3 text-sm font-bold text-slate-700"></div>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <button id="saveKeyBtn" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-black text-white transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md">
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+          Save Key
+        </button>
+        <a href="https://console.x.ai/" target="_blank" rel="noopener" class="focus-ring inline-flex min-h-12 items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 font-bold text-slate-700 transition hover:-translate-y-0.5 hover:shadow-md">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          xAI Console
+        </a>
+      </div>
+    </div>
   </div>
 
   <div id="parentsModal" class="modal fixed inset-0 z-50 items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="parentsTitle">
@@ -669,6 +703,10 @@
       chatMessages: $('chatMessages'),
       chatInput: $('chatInput'),
       sendChatBtn: $('sendChatBtn'),
+      apiKeyModal: $('apiKeyModal'),
+      xaiKeyInput: $('xaiKeyInput'),
+      configStatus: $('configStatus'),
+      saveKeyBtn: $('saveKeyBtn'),
       storyboardGrid: $('storyboardGrid'),
       coachNote: $('coachNote'),
       cameraModal: $('cameraModal'),
@@ -967,6 +1005,9 @@
         ? 'Out of Grok credits. FirstVid will not read aloud or pretend a local analysis is enough.'
         : 'Grok analysis is required for Step 2.';
       elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (error?.code === 'XAI_KEY_MISSING') {
+        openApiKeyModal();
+      }
     }
 
     function makeQuickDraft() {
@@ -2109,6 +2150,42 @@
       modal.classList.remove('open');
     }
 
+    async function openApiKeyModal() {
+      openModal('apiKeyModal');
+      elements.xaiKeyInput.value = '';
+      elements.configStatus.textContent = 'Checking local key status...';
+      try {
+        const config = await fetch('./api/config').then((response) => response.json());
+        elements.configStatus.textContent = config.xaiConfigured
+          ? 'A key is already saved locally. Enter a new key only if you want to replace it.'
+          : 'No key saved yet. Add one to unlock Grok analysis on this computer.';
+      } catch {
+        elements.configStatus.textContent = 'Could not reach local config yet. Make sure FirstVid is running from the app or local server.';
+      }
+    }
+
+    async function saveApiKey() {
+      const key = elements.xaiKeyInput.value.trim();
+      if (!key) {
+        elements.configStatus.textContent = 'Paste your xAI key first.';
+        return;
+      }
+      elements.saveKeyBtn.disabled = true;
+      elements.saveKeyBtn.classList.add('opacity-70', 'cursor-wait');
+      elements.configStatus.textContent = 'Saving key locally...';
+      try {
+        const result = await postJson('/api/config', { xaiApiKey: key });
+        elements.xaiKeyInput.value = '';
+        elements.configStatus.textContent = result.message || 'Key saved locally.';
+        elements.coachNote.textContent = 'Grok key saved. You can analyze homework now.';
+      } catch (error) {
+        elements.configStatus.textContent = error.message || 'Could not save the key.';
+      } finally {
+        elements.saveKeyBtn.disabled = false;
+        elements.saveKeyBtn.classList.remove('opacity-70', 'cursor-wait');
+      }
+    }
+
     async function startCamera() {
       openModal('cameraModal');
       elements.cameraMessage.textContent = 'Asking for camera permission...';
@@ -2194,6 +2271,8 @@
     elements.analyzeBtn.addEventListener('click', analyzeCurrentImage);
     elements.removeImageBtn.addEventListener('click', resetApp);
     elements.readBtn.addEventListener('click', toggleReadAloud);
+    $('apiKeyBtn').addEventListener('click', openApiKeyModal);
+    elements.saveKeyBtn.addEventListener('click', saveApiKey);
     $('parentsBtn').addEventListener('click', () => openModal('parentsModal'));
     $('cameraBtn').addEventListener('click', startCamera);
     $('closeCameraBtn').addEventListener('click', () => {

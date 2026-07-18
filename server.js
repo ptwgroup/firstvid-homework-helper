@@ -6,11 +6,14 @@ const crypto = require('crypto');
 const PORT = Number(process.env.PORT || 8788);
 const ROOT = __dirname;
 const XAI_BASE_URL = 'https://api.x.ai/v1';
-const CACHE_ROOT = path.join(ROOT, '.firstvid-cache');
+const DATA_ROOT = process.env.FIRSTVID_DATA_DIR || ROOT;
+const ENV_FILE = process.env.FIRSTVID_ENV_FILE || path.join(ROOT, '.env');
+const CACHE_ROOT = path.join(DATA_ROOT, '.firstvid-cache');
+const GENERATED_ROOT = path.join(DATA_ROOT, 'generated');
 const LESSON_CACHE_VERSION = 'lesson-v2';
 const VIDEO_CACHE_VERSION = 'video-v1';
 
-loadEnv(path.join(ROOT, '.env'));
+loadEnv(ENV_FILE);
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -114,6 +117,19 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    if (req.method === 'GET' && req.url === '/api/config') {
+      return sendJson(res, 200, {
+        ok: true,
+        xaiConfigured: Boolean(process.env.XAI_API_KEY),
+        envFile: ENV_FILE,
+        dataDir: DATA_ROOT
+      });
+    }
+
+    if (req.method === 'POST' && req.url === '/api/config') {
+      return await handleSaveConfig(req, res);
+    }
+
     if (req.method === 'POST' && req.url === '/api/analyze-homework') {
       return await handleAnalyze(req, res);
     }
@@ -137,10 +153,33 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`FirstVid local AI server running at http://localhost:${PORT}`);
-  console.log(process.env.XAI_API_KEY ? 'xAI key loaded from environment.' : 'No XAI_API_KEY found. Add one to .env for real AI.');
-});
+function startServer(port = PORT) {
+  return new Promise((resolve, reject) => {
+    const onError = (error) => {
+      server.off('listening', onListening);
+      reject(error);
+    };
+    const onListening = () => {
+      server.off('error', onError);
+      const address = server.address();
+      const actualPort = typeof address === 'object' && address ? address.port : port;
+      const url = `http://localhost:${actualPort}`;
+      console.log(`FirstVid local AI server running at ${url}`);
+      console.log(process.env.XAI_API_KEY ? 'xAI key loaded from environment.' : `No XAI_API_KEY found. Add one to ${ENV_FILE} for real AI.`);
+      resolve({ server, port: actualPort, url });
+    };
+    server.once('error', onError);
+    server.once('listening', onListening);
+    server.listen(port);
+  });
+}
+
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
 
 async function handleAnalyze(req, res) {
   const body = await readJsonBody(req);
@@ -446,6 +485,34 @@ async function handleChatSubject(req, res) {
   }
 }
 
+async function handleSaveConfig(req, res) {
+  const body = await readJsonBody(req);
+  const key = String(body.xaiApiKey || '').trim();
+
+  if (!/^xai-[A-Za-z0-9_-]{20,}$/.test(key)) {
+    return sendJson(res, 400, {
+      code: 'INVALID_XAI_KEY',
+      error: 'Please enter a valid xAI API key that starts with xai-.'
+    });
+  }
+
+  try {
+    fs.mkdirSync(path.dirname(ENV_FILE), { recursive: true });
+    upsertEnvValue(ENV_FILE, 'XAI_API_KEY', key);
+    process.env.XAI_API_KEY = key;
+    sendJson(res, 200, {
+      ok: true,
+      xaiConfigured: true,
+      message: 'xAI key saved locally for this computer.'
+    });
+  } catch (error) {
+    sendJson(res, 500, {
+      code: 'CONFIG_SAVE_FAILED',
+      error: `Could not save local key: ${error.message}`
+    });
+  }
+}
+
 async function xaiFetch(endpoint, payload, method = 'POST') {
   const response = await fetch(`${XAI_BASE_URL}${endpoint}`, {
     method,
@@ -479,7 +546,7 @@ async function saveRemoteVideo(remoteUrl) {
     throw new Error(`Video download failed: ${response.statusText}`);
   }
 
-  const generatedDir = path.join(ROOT, 'generated');
+  const generatedDir = GENERATED_ROOT;
   fs.mkdirSync(generatedDir, { recursive: true });
   const fileName = `firstvid_ai_${Date.now()}.mp4`;
   const filePath = path.join(generatedDir, fileName);
@@ -915,7 +982,7 @@ function readVideoCache(key) {
   const cached = readCacheEntry('videos', key);
   if (!cached || !cached.videoUrl) return null;
   if (cached.videoUrl.startsWith('/generated/')) {
-    const localPath = path.join(ROOT, cached.videoUrl.replace(/^\//, ''));
+    const localPath = path.join(DATA_ROOT, cached.videoUrl.replace(/^\//, ''));
     return fs.existsSync(localPath) ? cached : null;
   }
   return cached.videoUrl.startsWith('http') ? null : cached;
@@ -948,9 +1015,10 @@ function publicApiError(error) {
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const pathname = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);
-  const filePath = path.normalize(path.join(ROOT, pathname));
+  const staticRoot = pathname.startsWith('/generated/') ? DATA_ROOT : ROOT;
+  const filePath = path.normalize(path.join(staticRoot, pathname));
 
-  if (!filePath.startsWith(ROOT)) {
+  if (!filePath.startsWith(staticRoot)) {
     return sendJson(res, 403, { error: 'Forbidden' });
   }
 
@@ -1013,3 +1081,24 @@ function loadEnv(filePath) {
     }
   }
 }
+
+function upsertEnvValue(filePath, key, value) {
+  const lines = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8').split(/\r?\n/) : [];
+  let found = false;
+  const escapedValue = String(value).replace(/\r?\n/g, '').trim();
+  const nextLines = lines
+    .filter((line, index) => index < lines.length - 1 || line.trim())
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#') || !trimmed.startsWith(`${key}=`)) return line;
+      found = true;
+      return `${key}=${escapedValue}`;
+    });
+  if (!found) nextLines.push(`${key}=${escapedValue}`);
+  fs.writeFileSync(filePath, `${nextLines.join('\n')}\n`);
+}
+
+module.exports = {
+  server,
+  startServer
+};
