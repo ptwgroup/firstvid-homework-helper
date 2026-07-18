@@ -121,6 +121,14 @@ The frontend renders the returned JSON into:
 
 FirstVid includes an Electron wrapper so Windows users can install it like a normal desktop app.
 
+Download the latest installer from:
+
+```text
+https://github.com/ptwgroup/firstvid-homework-helper/releases
+```
+
+The current public installer is unsigned. Windows SmartScreen may warn that the publisher is unknown. See `WINDOWS_TRUST.md` for why this happens, how to verify the SHA-256 checksum, and what is required to publish a broadly trusted signed installer.
+
 Developer build/run:
 
 ```bash
