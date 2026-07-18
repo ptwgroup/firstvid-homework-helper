@@ -977,8 +977,9 @@
 
     function showAnalysisIssue(error) {
       const code = error?.code || '';
+      const isKeyIssue = code === 'XAI_KEY_MISSING' || code === 'XAI_KEY_INVALID';
       const isCredits = code === 'OUT_OF_CREDITS' || /credit|spending|quota|permission|402/i.test(error?.message || error?.error || '');
-      const title = isCredits ? 'Out of Grok credits' : 'Grok analysis needed';
+      const title = isKeyIssue ? 'Grok key needs a fix' : (isCredits ? 'Out of Grok credits' : 'Grok analysis needed');
       const message = error?.message || error?.error || 'Step 2 requires Grok analysis. Try again when the local server and credits are ready.';
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       state.speaking = false;
@@ -1001,11 +1002,13 @@
       elements.analogyText.textContent = '';
       elements.questionsList.innerHTML = '';
       elements.tryText.textContent = '';
-      elements.coachNote.textContent = isCredits
+      elements.coachNote.textContent = isKeyIssue
+        ? 'Paste the full xAI key once. FirstVid saves it privately on this computer.'
+        : isCredits
         ? 'Out of Grok credits. FirstVid will not read aloud or pretend a local analysis is enough.'
         : 'Grok analysis is required for Step 2.';
       elements.analysisStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (error?.code === 'XAI_KEY_MISSING') {
+      if (isKeyIssue) {
         openApiKeyModal();
       }
     }

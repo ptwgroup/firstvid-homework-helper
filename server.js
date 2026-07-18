@@ -274,12 +274,7 @@ async function handleAnalyze(req, res) {
     const canRetryWithoutSearch = /tool|web_search|search/i.test(error.message);
     if (!canRetryWithoutSearch) {
       const apiStatus = publicApiError(error);
-      return sendJson(res, apiStatus === 'credits-or-permission' ? 402 : 502, {
-        code: apiStatus === 'credits-or-permission' ? 'OUT_OF_CREDITS' : 'GROK_ANALYSIS_UNAVAILABLE',
-        error: apiStatus === 'credits-or-permission'
-          ? 'Out of Grok credits or spending limit reached. Step 2 requires Grok analysis, so FirstVid cannot analyze new homework right now.'
-          : 'Grok analysis is unavailable right now. Step 2 requires Grok, so please try again later.'
-      });
+      return sendGrokUnavailable(res, apiStatus, 'analysis');
     }
     try {
       const retryPayload = { ...payload };
@@ -287,12 +282,7 @@ async function handleAnalyze(req, res) {
       response = await xaiFetch('/responses', retryPayload);
     } catch (retryError) {
       const apiStatus = publicApiError(retryError);
-      return sendJson(res, apiStatus === 'credits-or-permission' ? 402 : 502, {
-        code: apiStatus === 'credits-or-permission' ? 'OUT_OF_CREDITS' : 'GROK_ANALYSIS_UNAVAILABLE',
-        error: apiStatus === 'credits-or-permission'
-          ? 'Out of Grok credits or spending limit reached. Step 2 requires Grok analysis, so FirstVid cannot analyze new homework right now.'
-          : 'Grok analysis is unavailable right now. Step 2 requires Grok, so please try again later.'
-      });
+      return sendGrokUnavailable(res, apiStatus, 'analysis');
     }
   }
 
@@ -476,12 +466,7 @@ async function handleChatSubject(req, res) {
     sendJson(res, 200, { answer: extractTextResponse(response) });
   } catch (error) {
     const apiStatus = publicApiError(error);
-    sendJson(res, apiStatus === 'credits-or-permission' ? 402 : 502, {
-      code: apiStatus === 'credits-or-permission' ? 'OUT_OF_CREDITS' : 'GROK_CHAT_UNAVAILABLE',
-      error: apiStatus === 'credits-or-permission'
-        ? 'Out of Grok credits or spending limit reached. Chat needs Grok, so it is paused for now.'
-        : 'Grok chat is unavailable right now. Please try again later.'
-    });
+    sendGrokUnavailable(res, apiStatus, 'chat');
   }
 }
 
@@ -511,6 +496,31 @@ async function handleSaveConfig(req, res) {
       error: `Could not save local key: ${error.message}`
     });
   }
+}
+
+function sendGrokUnavailable(res, apiStatus, area) {
+  if (apiStatus === 'invalid-key') {
+    return sendJson(res, 401, {
+      code: 'XAI_KEY_INVALID',
+      error: 'The saved xAI key was rejected. Paste the full key that starts with xai-, then try again.'
+    });
+  }
+
+  if (apiStatus === 'credits-or-permission') {
+    return sendJson(res, 402, {
+      code: 'OUT_OF_CREDITS',
+      error: area === 'chat'
+        ? 'Out of Grok credits or spending limit reached. Chat needs Grok, so it is paused for now.'
+        : 'Out of Grok credits or spending limit reached. Step 2 requires Grok analysis, so FirstVid cannot analyze new homework right now.'
+    });
+  }
+
+  return sendJson(res, 502, {
+    code: area === 'chat' ? 'GROK_CHAT_UNAVAILABLE' : 'GROK_ANALYSIS_UNAVAILABLE',
+    error: area === 'chat'
+      ? 'Grok chat is unavailable right now. Please try again later.'
+      : 'Grok analysis is unavailable right now. Step 2 requires Grok, so please try again later.'
+  });
 }
 
 async function xaiFetch(endpoint, payload, method = 'POST') {
@@ -1017,6 +1027,7 @@ function hashNumber(value) {
 
 function publicApiError(error) {
   const message = safeText(error && error.message);
+  if (/401|unauthorized|authentication|invalid api key|invalid.*key|bearer/i.test(message)) return 'invalid-key';
   if (/credit|spending|quota|permission|403/i.test(message)) return 'credits-or-permission';
   if (/rate|429/i.test(message)) return 'rate-limited';
   return 'api-unavailable';
