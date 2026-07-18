@@ -1,4 +1,4 @@
-const CACHE_NAME = 'firstvid-v11';
+const CACHE_NAME = 'firstvid-v12';
 const CORE_ASSETS = [
   './',
   './index.html',

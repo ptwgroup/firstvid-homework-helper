@@ -487,12 +487,12 @@ async function handleChatSubject(req, res) {
 
 async function handleSaveConfig(req, res) {
   const body = await readJsonBody(req);
-  const key = String(body.xaiApiKey || '').trim();
+  const key = normalizeXaiApiKey(body.xaiApiKey);
 
-  if (!/^xai-[A-Za-z0-9_-]{20,}$/.test(key)) {
+  if (!/^xai-[^\s"'`]{8,}$/i.test(key)) {
     return sendJson(res, 400, {
       code: 'INVALID_XAI_KEY',
-      error: 'Please enter a valid xAI API key that starts with xai-.'
+      error: 'Please enter an xAI API key that starts with xai-. Do not include screenshots or extra text.'
     });
   }
 
@@ -990,6 +990,16 @@ function readVideoCache(key) {
 
 function safeText(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeXaiApiKey(value) {
+  const raw = String(value || '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim()
+    .replace(/^bearer\s+/i, '')
+    .replace(/^["'`]+|["'`]+$/g, '');
+  const match = raw.match(/xai-[A-Za-z0-9_.:-]+/i);
+  return match ? match[0] : raw.replace(/\s+/g, '');
 }
 
 function shortenServer(text, max) {

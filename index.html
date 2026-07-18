@@ -2176,10 +2176,10 @@
       try {
         const result = await postJson('/api/config', { xaiApiKey: key });
         elements.xaiKeyInput.value = '';
-        elements.configStatus.textContent = result.message || 'Key saved locally.';
+        elements.configStatus.textContent = result.message || 'Key saved locally. Try Analyze again.';
         elements.coachNote.textContent = 'Grok key saved. You can analyze homework now.';
       } catch (error) {
-        elements.configStatus.textContent = error.message || 'Could not save the key.';
+        elements.configStatus.textContent = error.message || 'Could not save the key. Make sure it starts with xai-.';
       } finally {
         elements.saveKeyBtn.disabled = false;
         elements.saveKeyBtn.classList.remove('opacity-70', 'cursor-wait');
